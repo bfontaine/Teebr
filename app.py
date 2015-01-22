@@ -6,8 +6,8 @@ from flask.ext.babel import Babel
 from webassets_iife import IIFE
 
 from teebr import store
-from teebr.flaskutils import unlogged_only, user
-from remindme.log import mkLogger
+from teebr.flaskutils import unlogged_only, logged_only, user
+from teebr.log import mkLogger
 
 app = Flask(__name__)
 app.config.from_pyfile('teebr.cfg', silent=True)
@@ -92,8 +92,19 @@ def get_locale():
     logger.debug("locale: fall back in headers")
     return request.accept_languages.best_match(trs)
 
+# TODO
 
 @app.route('/')
 @unlogged_only
 def index():
     return render_template('main.html')
+
+@app.route('/login')
+@unlogged_only
+def login():
+    return render_template('login.html')
+
+@app.route('/home')
+@logged_only
+def home():
+    return render_template('home.html')
