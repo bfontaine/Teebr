@@ -1,6 +1,6 @@
 # Teebr Makefile
 
-VENV = venv
+VENV = ./venv
 SRC  = teebr
 
 .PHONY: clean compile-assets deps run
