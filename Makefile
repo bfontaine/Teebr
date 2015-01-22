@@ -3,7 +3,7 @@
 VENV = venv
 SRC  = teebr
 
-.PHONY: clean deps
+.PHONY: clean compile-assets deps run
 
 # Docs
 # ------------------------
