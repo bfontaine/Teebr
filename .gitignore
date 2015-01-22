@@ -1,7 +1,10 @@
 *~
 *.tgz
 .*.sw*
+# OSX
 .DS_Store
+# Misc
+/TODO
 # Python
 *.pyc
 *.egg-info
@@ -9,6 +12,9 @@ __pycache__
 /venv
 /htmlcov
 /dist
-/TODO
 .coverage
 .tox
+# Tex
+*.log
+*.out
+*.aux

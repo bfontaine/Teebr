@@ -1,0 +1,62 @@
+\documentclass[]{article}
+
+\usepackage[francais]{babel}
+
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{epsfig,graphics,graphicx}
+% \usepackage{pstricks,pst-node,pst-tree}
+\ifxetex
+  \usepackage{fontspec,xltxtra,xunicode}
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+\else
+  \ifluatex
+    \usepackage{fontspec}
+    \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \else
+    \usepackage[utf8]{inputenc}
+  \fi
+\fi
+
+\usepackage[unicode=true]{hyperref}
+\usepackage[babel=true]{csquotes}
+\hypersetup{breaklinks=true, pdfborder={0 0 0}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevents overfull lines
+% \setcounter{secnumdepth}{0}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% http://tex.stackexchange.com/a/144928/14718
+\usepackage[round]{natbib}
+\bibliographystyle{plainnatfr}
+
+\newcommand{\I}{\textit}
+\newcommand{\q}{\enquote}
+\newcommand{\hash}{\texttt}
+
+% defs
+% ----
+\def\twt{Twitter}
+\def\api{\I {\sc api}}
+
+\input{titre.tex}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\input{intro.tex}
+\input{methodo.tex}
+\input{results.tex}
+\input{discuss.tex}
+\input{conclusion.tex}
+
+\newpage
+\bibliography{rapport}
+
+\end{document}
