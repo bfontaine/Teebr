@@ -1,0 +1,17 @@
+/* colors */
+
+@text: #333;
+@light-text: white;
+
+/* utilities */
+
+a.text {
+  color: inherit;
+}
+
+.transition(@duration, @interpolation, @prop: all) {
+  -webkit-transition: @prop @duration @interpolation;
+     -moz-transition: @prop @duration @interpolation;
+      -ms-transition: @prop @duration @interpolation;
+          transition: @prop @duration @interpolation;
+}
