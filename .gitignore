@@ -18,3 +18,7 @@ __pycache__
 *.log
 *.out
 *.aux
+*.bbl
+*.blg
+*.toc
+*.pdf
