@@ -3,7 +3,7 @@
 VENV = ./venv
 SRC  = teebr
 
-.PHONY: clean compile-assets deps run
+.PHONY: clean compile-assets deploy deps run
 
 # Docs
 # ------------------------
@@ -70,6 +70,12 @@ babel-compile:
 run:
 	$(BIN)gunicorn app:app
 
+
+# Deploy
+# ------------------------
+
+deploy:
+	./deploy.sh
 
 # Cleaning
 # ------------------------
