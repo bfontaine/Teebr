@@ -28,4 +28,4 @@ app.css
 *.toc
 *.pdf
 # SSL stuff
-/server.*
+/_ssl
