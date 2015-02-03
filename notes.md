@@ -13,3 +13,8 @@ Buts :
   relancer le programme (solution possible : le programme intercepte un signal
   qui veut dire qu’il faut recharger le fichier de règles, le programme qui
   valide la modification des règles le notifie avec ce signal)
+
+Technos :
+
+* ElasticSearch (container docker)
+* Python w/ python-twitter
