@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from persistence import store
+from db import store
 
 # silent pyflakes
 store
