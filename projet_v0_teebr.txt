@@ -1,0 +1,19 @@
+# v0
+
+## Quelle forme pourrait prendre une démo de votre projet ?
+
+Une interface Web où on pourrait se connecter, noter des tweets et voir des
+comptes recommandés.
+
+## Où et comment allez-vous récupérer vos données ?
+
+Sur Twitter, avec un programme Python qui tourne en permanence et utilise l’API
+Streaming du site pour récupérer des tweets.
+
+## De combien de données avez-vous besoin au départ ?
+
+Au moins quelques centaines de tweets.
+
+## Sous quelle forme allez-vous les stocker ?
+
+Dans une base de données ElasticSearch.
