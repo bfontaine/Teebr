@@ -1,19 +1,24 @@
 # -*- coding: UTF-8 -*-
 
+from __future__ import absolute_import
+
 from os import environ
 
-from twitter import Api
-from twitter.error import TwitterError
+import tweepy
 
-class TwitterAuthError(Exception):
-    pass
+from .features import LANGUAGES
+
+
+class TwitterPipeListener(tweepy.StreamListener):
+
+    def on_status(self, status):
+        if status.lang not in LANGUAGES:
+            return
+        # just a test
+        print "@%s: %s" % (status.author.screen_name, status.text)
 
 
 class TwitterPipe(object):
-    """
-    A pipe between our app and Twitter, i.e. an object which fetchs tweets from
-    Twitter and insert them in our database.
-    """
 
     def __init__(self):
         self.init_from_env()
@@ -27,18 +32,15 @@ class TwitterPipe(object):
                 "access_token_secret")
 
         kw = {k: environ["%s%s" % (prefix, k.upper())] for k in keys}
-        self.api = Api(**kw)
+
+        # see https://github.com/tweepy/examples/blob/master/streamwatcher.py
+        # for an example on how to create a stream handler
+        auth = tweepy.auth.OAuthHandler(kw["consumer_key"],
+                kw["consumer_secret"])
+        auth.set_access_token(kw["access_token_key"], kw["access_token_secret"])
+        self.stream = tweepy.Stream(auth, TwitterPipeListener(), timeout=None)
 
 
-    def check_credentials(self):
-        """
-        Check if the API credentials of this pipe are ok. It'll raise a
-        ``TwitterAuthError`` if they aren't.
-        """
-        try:
-            return self.api.VerifyCredentials()
-        except TwitterError as t:
-            if t.message[0].get("code") == 215:
-                # Raise a proper exception
-                raise TwitterAuthError(t.message)
-            raise t
+    def run(self):
+        # we'll filter users/keywords later
+        self.stream.sample()
