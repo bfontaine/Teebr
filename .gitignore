@@ -29,3 +29,6 @@ app.css
 *.pdf
 # SSL stuff
 /_tls
+
+# Secret stuff (keys, etc)
+/ENV
