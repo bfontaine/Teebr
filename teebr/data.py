@@ -6,13 +6,13 @@ from os import environ
 
 import tweepy
 
-from .features import LANGUAGES
+from .features import filter_status
 
 
 class TwitterPipeListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        if status.lang not in LANGUAGES:
+        if not filter_status(status):
             return
         # just a test
         print "@%s: %s" % (status.author.screen_name, status.text)
