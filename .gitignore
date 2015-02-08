@@ -27,8 +27,12 @@ app.css
 *.blg
 *.toc
 *.pdf
+
 # SSL stuff
 /_tls
 
 # Secret stuff (keys, etc)
 /ENV
+
+# Data
+/datasets
