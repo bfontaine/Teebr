@@ -114,6 +114,8 @@ class ProcessedStatus(object):
         self.set_geo()
         self.set_lang()
         self.set_emojis()
+        self.set_entities()
+        self.set_contributors()
 
 
     def register_features(self, names):
@@ -175,3 +177,12 @@ class ProcessedStatus(object):
         Values: [0, 1]
         """
         self.features["emojis"] = contains_emoji(self.text)
+
+
+    def set_entities(self):
+        for key in ("urls", "hashtags", "mentions"):
+            self.features[key] = int(bool(self._st.entities["urls"]))
+
+
+    def set_contributors(self):
+        self.features["contributors"] = self._st.contributors is not None
