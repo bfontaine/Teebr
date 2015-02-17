@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from collections import defaultdict
+
 from .textutils import contains_emoji
 
 LANGUAGES = ('en', 'fr')
@@ -96,81 +98,51 @@ def filter_status(st):
     return True
 
 
-class ProcessedStatus(object):
-    """
-    A wrapper for a status with a ``compute_features`` method.
-    """
-
+class FeaturesDict(defaultdict):
     def __init__(self, st):
+        super(FeaturesDict, self).__init__(float)
         self._st = st
-        self.features = {}
 
 
     def compute_features(self):
         """
         Compute all features for this tweet
         """
-        self.set_source_type()
-        self.set_geo()
-        self.set_lang()
-        self.set_emojis()
-        self.set_entities()
-        self.set_contributors()
+        self._set_source_type()
+        self._set_emojis()
+
+        self["geolocalized"] = self._st.geo is not None
+        self["lang_%s" % self._st.lang] = 1
+        self["contributors"] = self._st.contributors is not None
+
+        for key in ("urls", "hashtags", "mentions"):
+            self[key] = int(bool(self._st.entities["urls"]))
 
 
-    def register_features(self, names):
-        """
-        Quick shortcut to add a list of features, each one being a string which
-        will be added as a feature with the value ``0``.
-        """
-        for n in names:
-            self.features[n] = 0
-
-
-    def set_source_type(self):
+    def _set_source_type(self):
         """
         Feature: source type
         Keys: source_mobile, source_desktop, source_autopub, source_social,
             source_tablet, source_other, ... (see SOURCE_TYPES)
         Values: [0, 1]
         """
-        self.register_features(SOURCE_TYPES.keys())
         text = self._st.source.strip()
 
         for s,vs in SOURCE_TYPES.items():
             if text in vs:
-                self.features[s] = 1
+                self[s] = 1
                 return
 
         ltext = text.lower()
         for brand in ("android", "iphone", "blackberry", "windows phone"):
             if ltext.endswith(" for %s" % brand):
-                self.features["source_mobile"] = 1
+                self["source_mobile"] = 1
                 return
 
-        self.features["source_others"] = 1
+        self["source_others"] = 1
 
 
-    def set_geo(self):
-        """
-        Feature: geolocalized
-        Keys: geolocalized
-        Values: [0, 1]
-        """
-        self.features["geolocalized"] = self._st.geo is not None
-
-
-    def set_lang(self):
-        """
-        Feature: language
-        Keys: lang_en, lang_fr
-        Values: [0, 1]
-        """
-        self.register_features(["lang_%s" % l for l in LANGUAGES])
-        self.features["lang_%s" % self._st.lang] = 1
-
-
-    def set_emojis(self):
+    def _set_emojis(self):
         """
         Feature: emojis
         Keys: emojis
@@ -179,10 +151,7 @@ class ProcessedStatus(object):
         self.features["emojis"] = contains_emoji(self.text)
 
 
-    def set_entities(self):
-        for key in ("urls", "hashtags", "mentions"):
-            self.features[key] = int(bool(self._st.entities["urls"]))
-
-
-    def set_contributors(self):
-        self.features["contributors"] = self._st.contributors is not None
+def compute_features(status):
+    f = FeaturesDict(status)
+    f.compute_features()
+    return f
