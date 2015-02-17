@@ -24,7 +24,7 @@ js_filters = []
 css_filters = []
 
 if not app.config['DEBUG']:
-    js_filters += [IIFE, 'closure_js']
+    js_filters += [IIFE] #, 'closure_js']
     css_filters += ['cssmin']
     assets.config["CLOSURE_EXTRA_ARGS"] = ['--language_in', 'ECMASCRIPT5']
 
