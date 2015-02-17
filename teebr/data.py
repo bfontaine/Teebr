@@ -7,15 +7,22 @@ from os import environ
 import tweepy
 
 from .features import filter_status
+from .log import mkLogger
+from .pipeline import import_status, init
 
+logger = mkLogger("pipe")
 
 class TwitterPipeListener(tweepy.StreamListener):
+
+    def __init__(self, *args, **kw):
+        super(TwitterPipeListener, self).__init__(*args, **kw)
+        init()
 
     def on_status(self, status):
         if not filter_status(status):
             return
-        # just a test
-        print "@%s: %s" % (status.author.screen_name, status.text)
+        logger.debug("Importing status id '%s'" % status.id)
+        import_status(status)
 
 
 class TwitterPipe(object):
@@ -42,5 +49,13 @@ class TwitterPipe(object):
 
 
     def run(self):
-        # we'll filter users/keywords later
-        self.stream.sample()
+        try:
+            # we'll filter users/keywords later
+            self.stream.sample()
+        except KeyboardInterrupt:
+            logger.debug("Stopping the API pipe due to keyboard interrupt")
+
+
+def collect():
+    t = TwitterPipe()
+    t.run()
