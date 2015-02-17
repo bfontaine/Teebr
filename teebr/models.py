@@ -170,7 +170,7 @@ def create_tables():
     db.create_tables([ Producer, Consumer, Status, Rating ], safe=True)
 
 
-def dict2model(kv, model):
+def dict2model(kv, model, create=False):
     """
     Take a dictionnary and a model class and return a new model instance
     """
@@ -181,4 +181,6 @@ def dict2model(kv, model):
                 and not isinstance(v, PrimaryKeyField) \
                 and k in kv:
             params[k] = kv[k]
+    if create:
+        return model.create(**params)
     return model(**params)

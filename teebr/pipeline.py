@@ -27,7 +27,7 @@ def import_status(st):
     # get or create
     with db.transaction():
         try:
-            author = dict2model(author_dict, Producer)
+            author = dict2model(author_dict, Producer, True)
         except IntegrityError as e:
             logger.debug(e)
             author = Producer.get(Producer.screen_name == author_dict["screen_name"])
