@@ -6,7 +6,7 @@ from os import environ
 from peewee import SqliteDatabase, Model
 from peewee import FloatField, ForeignKeyField, BooleanField
 
-db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "/tmp/wsw.db"))
+db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "/tmp/teebr.db"))
 
 class IndicatorField(FloatField):
     def __init__(self, **kwargs):
@@ -19,7 +19,7 @@ class BaseModel(Model):
         database = db
 
 
-class ContentSignatureMixin(BaseModel):
+class ContentSignature(BaseModel):
 
     # Sources
     source_mobile = IndicatorField()
@@ -54,19 +54,19 @@ class ContentSignatureMixin(BaseModel):
     contributors = IndicatorField()
 
 
-class User(BaseModel):
+class User(ContentSignature):
     pass
 
 
-class Producer(User, ContentSignatureMixin):
+class Producer(User):
     pass
 
 
-class Consumer(User, ContentSignatureMixin):
+class Consumer(User):
     pass
 
 
-class Status(BaseModel, ContentSignatureMixin):
+class Status(ContentSignature):
     pass
 
 

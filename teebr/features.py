@@ -109,11 +109,11 @@ class FeaturesDict(defaultdict):
         Compute all features for this tweet
         """
         self._set_source_type()
-        self._set_emojis()
 
         self["geolocalized"] = self._st.geo is not None
         self["lang_%s" % self._st.lang] = 1
         self["contributors"] = self._st.contributors is not None
+        self["emojis"] = contains_emoji(self._st.text)
 
         for key in ("urls", "hashtags", "mentions"):
             self[key] = int(bool(self._st.entities["urls"]))
@@ -140,15 +140,6 @@ class FeaturesDict(defaultdict):
                 return
 
         self["source_others"] = 1
-
-
-    def _set_emojis(self):
-        """
-        Feature: emojis
-        Keys: emojis
-        Values: [0, 1]
-        """
-        self.features["emojis"] = contains_emoji(self.text)
 
 
 def compute_features(status):
