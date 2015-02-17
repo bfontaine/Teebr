@@ -8,20 +8,20 @@ import tweepy
 
 from .features import filter_status
 from .log import mkLogger
-from .pipeline import import_status, init
+from .pipeline import import_status, init_pipeline
 
-logger = mkLogger("pipe")
+logger = mkLogger("data")
 
 class TwitterPipeListener(tweepy.StreamListener):
 
     def __init__(self, *args, **kw):
         super(TwitterPipeListener, self).__init__(*args, **kw)
-        init()
+        init_pipeline()
 
     def on_status(self, status):
         if not filter_status(status):
             return
-        logger.debug("Importing status id '%s'" % status.id)
+        #logger.debug("Importing status id '%s'" % status.id)
         import_status(status)
 
 
@@ -49,6 +49,7 @@ class TwitterPipe(object):
 
 
     def run(self):
+        logger.debug("Starting the pipeline...")
         try:
             # we'll filter users/keywords later
             self.stream.sample()

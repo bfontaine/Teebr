@@ -103,20 +103,20 @@ class FeaturesDict(defaultdict):
         super(FeaturesDict, self).__init__(float)
         self._st = st
 
-
     def compute_features(self):
         """
         Compute all features for this tweet
         """
         self._set_source_type()
 
-        self["geolocalized"] = self._st.geo is not None
-        self["lang_%s" % self._st.lang] = 1
-        self["contributors"] = self._st.contributors is not None
-        self["emojis"] = contains_emoji(self._st.text)
+        self["sg_geolocalized"] = self._st.geo is not None
+        self["sg_lang_%s" % self._st.lang] = 1
+        self["sg_contributors"] = self._st.contributors is not None
+        self["sg_emojis"] = contains_emoji(self._st.text)
+        self["sg_nsfw"] = self._st.possibly_sensitive
 
-        for key in ("urls", "hashtags", "mentions"):
-            self[key] = int(bool(self._st.entities["urls"]))
+        for key in ("urls", "hashtags", "user_mentions", "trends", "symbols"):
+            self["sg_%s" % key] = int(bool(self._st.entities["urls"]))
 
 
     def _set_source_type(self):
@@ -130,16 +130,16 @@ class FeaturesDict(defaultdict):
 
         for s,vs in SOURCE_TYPES.items():
             if text in vs:
-                self[s] = 1
+                self["sg_%s" % s] = 1
                 return
 
         ltext = text.lower()
         for brand in ("android", "iphone", "blackberry", "windows phone"):
             if ltext.endswith(" for %s" % brand):
-                self["source_mobile"] = 1
+                self["sg_source_mobile"] = 1
                 return
 
-        self["source_others"] = 1
+        self["sg_source_others"] = 1
 
 
 def compute_features(status):
