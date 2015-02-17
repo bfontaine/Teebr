@@ -16,5 +16,5 @@ Buts :
 
 Technos :
 
-* ElasticSearch (container docker)
-* Python w/ python-twitter
+* SQLite (pour le schéma et l’économie de mémoire par rapport à ES)
+* Python w/ tweepy
