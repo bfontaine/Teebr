@@ -11,16 +11,23 @@ from .models import Producer, Consumer, Status
 
 # Note: no authentication is provided here
 
-class ProducerAdmin(ModelView):
-    column_searchable_list = (Producer.name, Producer.screen_name,)
+class ModelAdminView(ModelView):
+    # read only
+    can_create = False
+    can_edit = False
+    can_delete = False
 
-class ConsumerAdmin(ModelView):
+    page_size = 50
+
+class ProducerAdmin(ModelAdminView):
     pass
 
-class StatusAdmin(ModelView):
-    column_sortable_list = (Status.created_at, ('producer', Producer.screen_name))
-    column_searchable_list = (Status.text,)
+class ConsumerAdmin(ModelAdminView):
+    pass
 
+class StatusAdmin(ModelAdminView):
+    column_exclude_list = ("entities_json", )
+    pass
 
 def setup_admin(app):
     app_admin = admin.Admin(app, name=u"Teebr Admin")

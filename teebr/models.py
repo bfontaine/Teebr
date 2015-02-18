@@ -10,8 +10,9 @@ from peewee import DateTimeField, IntegerField, PrimaryKeyField
 db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "/tmp/teebr.db"))
 
 class IndicatorField(FloatField):
-    def __init__(self, **kwargs):
+    def __init__(self, name, **kwargs):
         kwargs.setdefault("default", 0)
+        kwargs.setdefault("verbose_name", name)
         super(IndicatorField, self).__init__(**kwargs)
 
 
@@ -35,40 +36,40 @@ class BaseModel(Model):
 class ContentSignature(BaseModel):
 
     # Sources
-    sg_source_mobile = IndicatorField()
-    sg_source_tablet = IndicatorField()
-    sg_source_desktop = IndicatorField()
-    sg_source_autopub = IndicatorField()
-    sg_source_social = IndicatorField()
-    sg_source_news = IndicatorField()
-    sg_source_others = IndicatorField()
+    sg_source_mobile = IndicatorField(u"Mobile source")
+    sg_source_tablet = IndicatorField(u"Tablet source")
+    sg_source_desktop = IndicatorField(u"Desktop source")
+    sg_source_autopub = IndicatorField(u"Autopub source")
+    sg_source_social = IndicatorField(u"Social source")
+    sg_source_news = IndicatorField(u"News source")
+    sg_source_others = IndicatorField(u"Other source")
 
     # URLs
-    sg_url_social = IndicatorField()
-    sg_url_social_media = IndicatorField()
-    sg_url_product = IndicatorField()
-    sg_url_video = IndicatorField()
+    sg_url_social = IndicatorField(u"Social URL")
+    sg_url_social_media = IndicatorField(u"Social Media URL")
+    sg_url_product = IndicatorField(u"Product URL")
+    sg_url_video = IndicatorField(u"Video URL")
 
     # Entities
-    sg_urls = IndicatorField()
-    sg_hashtags = IndicatorField()
-    sg_user_mentions = IndicatorField()
-    sg_trends = IndicatorField()
-    sg_symbols = IndicatorField()
+    sg_urls = IndicatorField(u"URLs")
+    sg_hashtags = IndicatorField(u"Hashtags")
+    sg_user_mentions = IndicatorField(u"Mentions")
+    sg_trends = IndicatorField(u"Trends")
+    sg_symbols = IndicatorField(u"Symbols")
 
     # L10N
-    sg_geolocalized = IndicatorField()
+    sg_geolocalized = IndicatorField(u"Geolocalized")
 
     # Languages
-    sg_lang_en = IndicatorField()
-    sg_lang_fr = IndicatorField()
+    sg_lang_en = IndicatorField(u"English")
+    sg_lang_fr = IndicatorField(u"French")
 
     # Content
-    sg_emojis = IndicatorField()
-    sg_nsfw = IndicatorField()
+    sg_emojis = IndicatorField(u"Emojis")
+    sg_nsfw = IndicatorField(u"NSFW")
 
     # Other Twitter features
-    sg_contributors = IndicatorField()
+    sg_contributors = IndicatorField(u"Contributors")
 
 
 class User(ContentSignature):
@@ -76,7 +77,7 @@ class User(ContentSignature):
 
 
 class Producer(User):
-    id_str = CharField(max_length=32)
+    id_str = CharField(max_length=32, verbose_name=u"Twitter ID")
 
     protected = BooleanField(default=False)
     verified = BooleanField(default=False)
@@ -114,8 +115,8 @@ class Producer(User):
     profile_text_color = HexColorField()
 
     # Profil images
-    profile_background_image_url_https = CharField(null=True)
-    profile_image_url_https = CharField(null=True)
+    profile_background_image_url_https = CharField(null=True, verbose_name=u"Background image URL")
+    profile_image_url_https = CharField(null=True, verbose_name=u"Avatar URL")
 
     default_profile = BooleanField(default=True)
     default_profile_image = BooleanField(default=True)
@@ -135,7 +136,7 @@ class Consumer(User):
 
 
 class Status(ContentSignature):
-    id_str = CharField(max_length=32)
+    id_str = CharField(max_length=32, verbose_name=u"Twitter ID")
 
     text = CharField()
 
@@ -145,6 +146,8 @@ class Status(ContentSignature):
     # Location
     coordinates = CharField(null=True)
     lang = CharField(default="en", max_length=16)
+
+    # FIXME not a text in Tweepy (use more fields?)
     place = CharField(null=True)
 
     source = CharField()
