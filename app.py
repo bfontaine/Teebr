@@ -1,17 +1,21 @@
 # -*- coding: UTF-8 -*-
 
-from flask import Flask, render_template, g, request, session
+from flask import Flask, render_template, g, request
 from flask.ext.assets import Environment, Bundle
 from flask.ext.babel import Babel
 from webassets_iife import IIFE
 
-from teebr import store
 from teebr.flaskutils import unlogged_only, logged_only, user
 from teebr.log import mkLogger
+from teebr.admin import setup_admin
 
 app = Flask(__name__)
 app.config.from_pyfile('teebr.cfg', silent=True)
 
+# admin
+setup_admin(app)
+
+# logs
 logger = mkLogger('app')
 
 # i18n
@@ -59,11 +63,11 @@ css = Bundle(
 assets.register('css_all', css)
 
 
-@app.before_request
-def set_current_user():
-    _id = session.get('_id')
-    if _id and '/static/' not in request.path:
-        setattr(g, 'user', store.get_user(_id=_id))
+#@app.before_request
+#def set_current_user():
+#    _id = session.get('_id')
+#    if _id and '/static/' not in request.path:
+#        setattr(g, 'user', store.get_user(_id=_id))
 
 
 @app.before_request
