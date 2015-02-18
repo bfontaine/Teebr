@@ -27,3 +27,5 @@ Werkzeug==0.9.6
 git+https://github.com/bfontaine/wtf-peewee.git@patch-1
 WTForms==2.0.2
 unidecode
+nltk
+numpy

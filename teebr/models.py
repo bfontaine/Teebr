@@ -159,9 +159,11 @@ class Status(ContentSignature):
     retweet_count = CountField()
 
     entities_json = CharField(default="{}")
-    normalized_text = CharField()
 
     author = ForeignKeyField(Producer, related_name='statuses')
+
+    # experimental
+    names = CharField()
 
 
 class Rating(BaseModel):

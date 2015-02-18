@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 
 from collections import defaultdict
 
-from .textutils import contains_emoji, normalize_text
+from .textutils import contains_emoji, extract_named_entities
 
 LANGUAGES = ('en',) # 'fr')
 
@@ -119,7 +119,7 @@ class FeaturesDict(defaultdict):
         self["sg_emojis"] = contains_emoji(self._st.text)
         self["sg_nsfw"] = self._st.possibly_sensitive
 
-        self["normalized_text"] = normalize_text(self._st.text)
+        self["names"] = ",".join(extract_named_entities(self._st.text))
 
         for key in ("urls", "hashtags", "user_mentions", "trends", "symbols"):
             self["sg_%s" % key] = int(bool(self._st.entities["urls"]))

@@ -1,0 +1,88 @@
+actionscript
+ada
+assembly
+awk
+bash
+c++
+clojure
+cobol
+coffeescript
+csharp
+delphi
+erlang
+fortran
+fsharp
+golang
+groovy
+haskell
+java
+javascript
+lisp
+lua
+matlab
+objective-c
+ocaml
+pascal
+perl
+php
+prolog
+python
+ruby
+rust
+scala
+scheme
+shell
+visual basic
+
+programming
+programming language
+
+vim
+emacs
+sublime text
+
+git
+command-line
+
+apple
+fsf
+google
+ibm
+microsoft
+mozilla
+samsung
+tesla
+
+cassandra
+couchdb
+elasticsearch
+hbase
+mongodb
+mysql
+neo4j
+postgresql
+redis
+riak
+sqlite
+
+a16z
+hacker
+paul graham
+silicon valley
+startup
+ycombinator
+
+android
+archlinux
+debian
+fedora
+freebsd
+iphone
+linux
+openbsd
+osx
+ubuntu
+windows phone
+
+richard stallman
+linus torvalds
