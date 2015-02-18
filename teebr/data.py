@@ -6,7 +6,7 @@ from os import environ
 
 import tweepy
 
-from .features import filter_status
+from .features import filter_status, LANGUAGES
 from .log import mkLogger
 from .pipeline import import_status, init_pipeline
 
@@ -48,15 +48,28 @@ class TwitterPipe(object):
         self.stream = tweepy.Stream(auth, TwitterPipeListener(), timeout=None)
 
 
-    def run(self):
+    def run(self, follow_ids=None, keywords=None):
+        params = {"languages": LANGUAGES}
+        filters = False
+
+        if follow_ids is not None:
+            filters = True
+            params["follow"] = follow_ids
+
+        if keywords is not None:
+            filters = True
+            params["track"] = keywords
+
         logger.debug("Starting the pipeline...")
         try:
-            # we'll filter users/keywords later
-            self.stream.sample()
+            if filters:
+                self.stream.filter(**params)
+            else:
+                self.stream.sample(**params)
         except KeyboardInterrupt:
             logger.debug("Stopping the API pipe due to keyboard interrupt")
 
 
-def collect():
+def collect(**kw):
     t = TwitterPipe()
-    t.run()
+    t.run(**kw)
