@@ -18,3 +18,11 @@ Technos :
 
 * SQLite (pour le schéma et l’économie de mémoire par rapport à ES)
 * Python w/ tweepy
+
+---
+
+Pas possible de recommander des tweets si on ne s'intéresse pas à ce dont ils
+parlent, on pense au TF/IDF mais on a une infinité de mots/hashtags possibles.
+
+--> enter nltk (initialiser avec `nltk.download()`) : voir si on peut extraire
+les noms des tweets pour déjà réduire les possiblités.

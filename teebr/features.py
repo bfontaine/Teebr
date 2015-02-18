@@ -4,9 +4,9 @@ from __future__ import absolute_import, unicode_literals
 
 from collections import defaultdict
 
-from .textutils import contains_emoji
+from .textutils import contains_emoji, normalize_text
 
-LANGUAGES = ('en', 'fr')
+LANGUAGES = ('en',) # 'fr')
 
 SOURCE_TYPES = {
     "source_mobile": [
@@ -94,6 +94,10 @@ def filter_status(st):
     if st.in_reply_to_screen_name:
         return False
 
+    # remove manual RTs
+    if st.text.startswith("RT @"):
+        return False
+
     # ok
     return True
 
@@ -114,6 +118,8 @@ class FeaturesDict(defaultdict):
         self["sg_contributors"] = self._st.contributors is not None
         self["sg_emojis"] = contains_emoji(self._st.text)
         self["sg_nsfw"] = self._st.possibly_sensitive
+
+        self["normalized_text"] = normalize_text(self._st.text)
 
         for key in ("urls", "hashtags", "user_mentions", "trends", "symbols"):
             self["sg_%s" % key] = int(bool(self._st.entities["urls"]))

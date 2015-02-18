@@ -144,11 +144,12 @@ class Status(ContentSignature):
     created_at = DateTimeField()
 
     # Location
-    coordinates = CharField(null=True)
+    # FIXME not a text in Tweepy (use more fields?)
+    #coordinates = CharField(null=True)
     lang = CharField(default="en", max_length=16)
 
     # FIXME not a text in Tweepy (use more fields?)
-    place = CharField(null=True)
+    #place = CharField(null=True)
 
     source = CharField()
     source_url = CharField()
@@ -158,6 +159,7 @@ class Status(ContentSignature):
     retweet_count = CountField()
 
     entities_json = CharField(default="{}")
+    normalized_text = CharField()
 
     author = ForeignKeyField(Producer, related_name='statuses')
 
