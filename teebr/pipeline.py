@@ -25,29 +25,49 @@ def import_status(st):
     st_dict.update(compute_features(st))
 
     # get or create
+    save_author = False
     with db.transaction():
         try:
             author = dict2model(author_dict, Producer, True)
+            save_author = True
         except IntegrityError as e:
             logger.debug(e)
             author = Producer.get(Producer.screen_name == author_dict["screen_name"])
 
-        author.save()
+        if save_author:
+            author.save()
 
-    status = dict2model(st_dict, Status)
-    status.author = author
+        status = dict2model(st_dict, Status)
+        set_producer(author, status, st_dict)
 
-    status.save()
+        status.save()
 
     logger.debug("Imported status '%s' as '%s'" % (status.id_str, status.id))
 
     return status
 
 
-def rate_status(consumer, status, score):
-    # TODO update the consumer's signature
+def update_user_sg(user, st_dict, factor=1):
+    factor = float(factor)
+    d_u = user.__dict__["_data"]
+    for k,v in st_dict.items():
+        if k.startswith("sg_"):
+            d_u[k] += v * factor
+
+
+def set_producer(producer, status, st_dict):
+    status.author = producer
+    update_user_sg(producer, st_dict, 1)
+
+    producer.imported_statuses += 1
+    producer.save()
+
+
+def rate_status(consumer, status, st_dict, score):
     with db.transaction():
         r = Rating.create(consumer=consumer, status=status, score=score)
         consumer.rated_statuses += 1
         r.save()
+
+        update_user_sg(consumer, st_dict, score)
         consumer.save()

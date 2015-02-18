@@ -160,7 +160,8 @@ class Status(ContentSignature):
 
 
 class Rating(BaseModel):
-    score = BooleanField()
+    # -1: dislike, 1: like
+    score = FloatField(default=0)
 
     status = ForeignKeyField(Status, related_name='ratings')
     consumer = ForeignKeyField(Consumer, related_name='ratings')
