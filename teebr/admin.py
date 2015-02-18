@@ -9,6 +9,8 @@ from flask.ext.admin.contrib.peewee import ModelView
 
 from .models import Producer, Consumer, Status
 
+# Note: no authentication is provided here
+
 class ProducerAdmin(ModelView):
     column_searchable_list = (Producer.name, Producer.screen_name,)
 
