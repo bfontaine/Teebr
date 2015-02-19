@@ -92,7 +92,6 @@ telnet
 buffer overflow
 csrf
 ddos
-xss
 
 ajax
 angularjs
@@ -112,7 +111,6 @@ normalise.css
 reactjs
 requirejs
 reverse-proxy
-ror
 sigmajs
 vpn
 vps
@@ -120,20 +118,20 @@ web developer
 web development
 zepto
 
-amazon
-apple
-adobe
-netflix
-bitbucket
-github
-google
-ibm
-microsoft
-ocamlpro
-samsung
-sourceforge
-tesla
-travisci
+Amazon
+Apple
+Adobe
+Netflix
+Bitbucket
+Github
+Google
+Ibm
+Microsoft
+Ocamlpro
+Samsung
+Sourceforge
+Tesla
+Travisci
 
 cassandra
 couchdb

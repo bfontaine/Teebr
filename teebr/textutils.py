@@ -45,7 +45,7 @@ DEL_SLANGS = [re.compile(s, re.IGNORECASE) for s in (
 )]
 
 # names we don't want to extract
-FORBIDDEN_NAMES = set([
+NAMES_BLACKLIST = set([
     "(", ")", "[", "]", "+", "|", "%", "...",
     "The", "Of", "In",
 ])
@@ -115,4 +115,4 @@ def extract_named_entities(text):
     tagged = nltk.pos_tag(tokens)
 
     return [word for word, tag in tagged
-                if tag.startswith("NN") and word not in FORBIDDEN_NAMES]
+                if tag.startswith("NN") and word not in NAMES_BLACKLIST]

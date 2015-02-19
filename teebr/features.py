@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import re
 from collections import defaultdict
 
 from .textutils import contains_emoji, extract_named_entities
@@ -80,6 +81,58 @@ URL_TYPES = {
     ],
 }
 
+APPS_BLACKLIST = set([
+    # followers spam
+    u"Unfollowers",
+    u"JustUnfollow",
+    u"fllwrs",
+    u"..ignite.v.1.",
+    u"Adi Sumardiyasa",
+    u"Who Unfollowed Me",
+
+    # tweets ranking
+    u"001FM Top40 Tweets",
+
+    # Games
+    u"1Dreamboy 2 Game",
+    u"1Dreamboy Version 2 Game",
+    u"Airport City Mobile",
+    u"The Tribez HD on iOS",
+
+    # General news
+    u"233Live Tweets",
+    u"247newz",
+
+    # Misc news
+    u"ADVFN News Alert",
+    u"APD Traffic Alerts",
+
+    # Buzzfeed-like
+    u"75325love",
+    u"AlltheGoss",
+    u"AllHealthSecrets.com",
+    u"Amusing information",
+    u"volkanc",
+    u"awe.sm",
+
+    # nsfw
+    u"definebabecom",
+    u"Cumagination Gay",
+    u"Cumagination Lesbian",
+    u"EscortGuidexXx",
+    u"TweetAdder v",
+
+    # Misc Spam
+    u";sdklafjas",
+    u"Acne-Treatments-and-Tips.com",
+    u"AmazonRecommend",
+
+    # Others
+    u"Adcourier",
+])
+
+# some apps add numbers at the end, e.g. MySpam, MySpam1, MySpam2, etc
+END_DIGITS = re.compile(r"\s*\d+$")
 
 def filter_status(st):
     """
@@ -92,6 +145,10 @@ def filter_status(st):
 
     # remove replies
     if st.in_reply_to_screen_name:
+        return False
+
+    # remove spam apps
+    if st.source and END_DIGITS.sub("", st.source) in APPS_BLACKLIST:
         return False
 
     # remove manual RTs
