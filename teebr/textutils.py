@@ -44,6 +44,12 @@ DEL_SLANGS = [re.compile(s, re.IGNORECASE) for s in (
     "rofl",
 )]
 
+# names we don't want to extract
+FORBIDDEN_NAMES = set([
+    "(", ")", "[", "]", "+", "|", "%", "...",
+    "The", "Of", "In",
+])
+
 
 def contains_emoji(text):
     """
@@ -108,4 +114,5 @@ def extract_named_entities(text):
     tokens = nltk.word_tokenize(text)
     tagged = nltk.pos_tag(tokens)
 
-    return [word for word, tag in tagged if tag.startswith("NN")]
+    return [word for word, tag in tagged
+                if tag.startswith("NN") and word not in FORBIDDEN_NAMES]
