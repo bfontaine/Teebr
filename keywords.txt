@@ -1,5 +1,7 @@
 actionscript
 ada
+applescript
+asp.net
 assembly
 awk
 bash
@@ -10,6 +12,8 @@ coffeescript
 csharp
 css
 delphi
+dotnet
+elisp
 erlang
 fortran
 fsharp
@@ -19,55 +23,107 @@ haskell
 html
 java
 javascript
+latex
 lisp
 lua
 markdown
 matlab
+nimrod
 objective-c
 ocaml
 pascal
 perl
 php
+powershell
 prolog
 python
 python2
 python3
+racket
 ruby
 rust
 scala
 scheme
 shell
 swiftlang
+typescript
+viml
 visual basic
 zsh
+
+ant
+bower
+capistrano
+cocoapods
+csslint
+gitignore
+gopm
+homebrew
+jshint
+leiningen
+makefile
+maven
+npm
+opam
+pip
+puppet
+rakefile
+rubocop
+rubygems
+vundle
 
 programming
 programming language
 
 emacs
+neovim
 sublime text
 textmate
 vim
 
+ack2
 command-line
 git
-ssh
+grep
 sftp
+ssh
 telnet
 
 buffer overflow
+csrf
 ddos
+xss
 
+ajax
+angularjs
+backbonejs
+bootstrap
+d3js
 dns
+dojojs
+dotjs
+emberjs
 http
+jquery
+leafletjs
+modernizr
 nginx
+normalise.css
+reactjs
+requirejs
 reverse-proxy
+ror
+sigmajs
+vpn
 vps
 web developer
 web development
+zepto
 
 amazon
 apple
+adobe
+netflix
 bitbucket
 github
 google
@@ -114,6 +170,12 @@ osx
 ubuntu
 windows phone
 
+xml
+json
+yaml
+toml
+csv
+
 aarch64
 clang
 cpu
@@ -125,6 +187,8 @@ mips
 powerpc
 sparc
 x86
+raspberrypi
+arduino
 
 fsf
 linus torvalds
