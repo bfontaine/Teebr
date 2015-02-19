@@ -147,8 +147,12 @@ def filter_status(st):
     if st.in_reply_to_screen_name:
         return False
 
+    # remove suspicious apps
+    if not st.source or not st.source_url:
+        return False
+
     # remove spam apps
-    if st.source and END_DIGITS.sub("", st.source) in APPS_BLACKLIST:
+    if END_DIGITS.sub("", st.source) in APPS_BLACKLIST:
         return False
 
     # remove manual RTs
