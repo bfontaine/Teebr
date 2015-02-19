@@ -8,6 +8,7 @@ clojure
 cobol
 coffeescript
 csharp
+css
 delphi
 erlang
 fortran
@@ -15,10 +16,12 @@ fsharp
 golang
 groovy
 haskell
+html
 java
 javascript
 lisp
 lua
+markdown
 matlab
 objective-c
 ocaml
@@ -27,31 +30,54 @@ perl
 php
 prolog
 python
+python2
+python3
 ruby
 rust
 scala
 scheme
 shell
+swiftlang
 visual basic
+zsh
 
 programming
 programming language
 
-vim
 emacs
 sublime text
+textmate
+vim
 
-git
 command-line
+git
+ssh
+sftp
+telnet
 
+buffer overflow
+ddos
+
+dns
+http
+nginx
+reverse-proxy
+vps
+web developer
+web development
+
+amazon
 apple
-fsf
+bitbucket
+github
 google
 ibm
 microsoft
-mozilla
+ocamlpro
 samsung
+sourceforge
 tesla
+travisci
 
 cassandra
 couchdb
@@ -66,10 +92,12 @@ riak
 sqlite
 
 a16z
-hacker
+hacker news
 paul graham
+product hunt
 silicon valley
 startup
+techcrunch
 ycombinator
 
 android
@@ -77,12 +105,30 @@ archlinux
 debian
 fedora
 freebsd
+gentoo
 iphone
 linux
+linux kernel
 openbsd
 osx
 ubuntu
 windows phone
 
-richard stallman
+aarch64
+clang
+cpu
+gpu
+hyperthread
+ia64
+llvm
+mips
+powerpc
+sparc
+x86
+
+fsf
 linus torvalds
+mozilla
+openstreetmap
+richard stallman
+tristan nitot
