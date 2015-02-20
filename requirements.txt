@@ -24,7 +24,7 @@ urllib3==1.10
 webassets==0.9
 webassets-iife==0.1.0
 Werkzeug==0.9.6
-git+https://github.com/bfontaine/wtf-peewee.git@patch-1
+git+https://github.com/bfontaine/wtf-peewee.git
 WTForms==2.0.2
 unidecode
 nltk
