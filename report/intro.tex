@@ -2,3 +2,34 @@
 
 \section{Introduction}
 
+Les moteurs de recommandation de contenu cherchent à trouver du contenu
+pertinent en fonction de sa similarité avec du contenu consommé par un
+utilisateur, tandis que les moteurs de recommandation de personnes sur les
+réseaux sociaux (par exemple ami(e)s ou collègues) se basent principalement sur
+le graph social et la place de chaque utilisateur dans celui-ci.
+
+On s’intéresse ici au réseau social \twt{}, où chaque utilisateur peut produire
+du contenu sous forme de cours messages (\tweets), lisibles par tous sur son
+profil. Un utilisateur peut \I{s’abonner} à d’autres utilisateurs, ce qui lui
+permet de recevoir le flux continu de tous les messages de ces abonnements sans
+avoir à consulter chaque profil individuellement. Cette notion d’abonnement est
+asymétrique : l’abonnement de A à B n’implique pas l’abonnement de B à A. Dans
+le vocabulaire de la plateforme, on parle de \I{suivre} un utilisateur.
+
+\twt{} est intéressant ici pour plusieurs points : le premier est la longueur
+des messages. Ceux-ci sont très courts (140 caractères maximum), ce qui rend
+l’extraction d’information plus difficile, car il n’y a pas de redondance et
+beaucoup de termes sont abrégés. Le second est l’accès aux messages, qui sont
+tous publics.\footnote{Il est possible de rendre un compte privé, mais peu
+d’utilisateurs le font.} L’\api{} de \twt{} est par ailleurs très bien faite,
+et il est facile de récupérer des messages, que l’on peut filtrer selon
+plusieurs critères. Cela n’aurait pas été possible avec d’autres réseaux comme
+\fb{}. Enfin, la qualité du flux que reçoit un utilisateur dépend des personnes
+auxquelles il est abonné, donc la recommandation de contenu est fortement liée
+à la recommandation d’utilisateurs.
+
+Le projet \tb{} a pour but de faire de la recommandation d’utilisateurs sur
+\twt{} non pas en fonction de leur place dans le graph social comme on le fait
+habituellement, mais en fonction du contenu qu’ils produisent. On utilisera
+pour cela un système de notation de \tweets{} pour construire le profil d’un
+utilisateur.

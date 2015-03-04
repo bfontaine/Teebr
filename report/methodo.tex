@@ -2,3 +2,40 @@
 
 \section{Méthodes}
 
+\subsection{Technologies}
+
+Le projet est réalisé intégralement en Python, et est divisé en trois grandes
+parties.
+
+\begin{itemize}
+  \item Récupération des données en utilisant l’\api{} Streaming de \twt{} avec
+    la bibliothèque \verb|tweepy|.
+  \item Traitement et stockage des données, à l’aide des bibliothèques
+    \verb|unidecode|, \verb|nltk| et \verb|textblob| pour le traitement et une
+    base de données SQLite pour le stockage. Le code utilise la bibliothèque
+    \verb|peewee| qui sert d’ORM pour la base. Cette abstraction permet de ne
+    pas dépendre du format de la base de données, il serait possible d’utiliser
+    une base PostgreSQL sans changer le code. L’utilisation d’SQLite permet de
+    pouvoir tester rapidemment sans devoir lancer de serveur de base de
+    données, ainsi que de profiter d’un schéma strict, que ne peuvent pas
+    offrir des bases NoSQL comme MongoDB ou ElasticSearch. L’utilisation d’une
+    base plutôt qu’un ensemble de fichiers JSON permet de faire des recherches
+    beaucoup plus performantes.
+  \item Interface Web, à l’aide des bibliothèques \verb|Flask| et
+    \verb|Gunicorn| pour la gestion des requêtes et de \verb|Babel| pour la
+    localisation (l10n). L’Interface utilise également \verb|LESS| pour
+    pré-processer le CSS, et le framework \verb|Bootstrap| pour la mise en
+    forme. Le site Web tourne dans un conteneur \I{Docker}, et est déployé avec
+    \verb|dokku|.
+\end{itemize}
+
+L’ensemble du code, y compris les commentaires, est écrit en anglais, et le
+projet est versionné avec Git.
+
+\subsection{Données}
+
+TODO
+
+\subsection{Traitement}
+
+TODO
