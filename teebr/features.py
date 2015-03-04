@@ -156,7 +156,7 @@ def filter_status(st):
         return False
 
     # remove manual RTs
-    if st.text.startswith("RT @"):
+    if st.text.startswith("RT @") or st.text.startswith("MT @"):
         return False
 
     # ok
