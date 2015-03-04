@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 import re
-import nltk
 from unidecode import unidecode
+from textblob import TextBlob
 
 # codes from http://stackoverflow.com/a/12824140/735926
 RE_EMOJI = re.compile(
@@ -111,8 +111,8 @@ def extract_named_entities(text):
     """
     text = normalize_text(text)
 
-    tokens = nltk.word_tokenize(text)
-    tagged = nltk.pos_tag(tokens)
+    blob = TextBlob(text)
+    tagged = blob.tags
 
     return [word for word, tag in tagged
                 if tag.startswith("NN") and word not in NAMES_BLACKLIST]
