@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 from collections import defaultdict
 
-from .textutils import contains_emoji, extract_named_entities
+from .text.utils import contains_emoji, extract_named_entities
 
 LANGUAGES = ('en',) # 'fr')
 
