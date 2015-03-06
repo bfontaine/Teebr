@@ -12,6 +12,19 @@ from .pipeline import import_status, init_pipeline
 
 logger = mkLogger("data")
 
+class TwitterRawPipeListener(tweepy.StreamListener):
+    """
+    A pipe listener which dumps all tweets in a file
+    """
+
+    def __init__(self, *args, **kw):
+        super(TwitterRawPipeListener, self).__init__(*args, **kw)
+        self.output = open("raw_tweets.jsons", "a")
+
+    def on_status(self, status):
+        self.output.write(status._json)
+
+
 class TwitterPipeListener(tweepy.StreamListener):
 
     def __init__(self, *args, **kw):
@@ -27,7 +40,8 @@ class TwitterPipeListener(tweepy.StreamListener):
 
 class TwitterPipe(object):
 
-    def __init__(self):
+    def __init__(self, raw=False):
+        self.raw = raw
         self.init_from_env()
 
 
@@ -45,7 +59,12 @@ class TwitterPipe(object):
         auth = tweepy.auth.OAuthHandler(kw["consumer_key"],
                 kw["consumer_secret"])
         auth.set_access_token(kw["access_token_key"], kw["access_token_secret"])
-        self.stream = tweepy.Stream(auth, TwitterPipeListener(), timeout=None)
+        self.init_stream(auth)
+
+    def init_stream(self, auth):
+        klass = TwitterPipeListener if not self.raw else TwitterRawPipeListener
+
+        self.stream = tweepy.Stream(auth, klass(), timeout=None)
 
 
     def run(self, follow_ids=None, keywords=None):
@@ -70,6 +89,6 @@ class TwitterPipe(object):
             logger.debug("Stopping the API pipe due to keyboard interrupt")
 
 
-def collect(**kw):
-    t = TwitterPipe()
+def collect(raw=False, **kw):
+    t = TwitterPipe(raw=raw)
     t.run(**kw)
