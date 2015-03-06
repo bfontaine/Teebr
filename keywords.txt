@@ -1,17 +1,13 @@
 actionscript
-ada
 applescript
 asp.net
 assembly
-awk
 bash
 c++
 clojure
-cobol
 coffeescript
 csharp
 css
-delphi
 dotnet
 elisp
 erlang
