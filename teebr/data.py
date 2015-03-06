@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 from os import environ
+from json import dumps
 
 import tweepy
 
@@ -22,7 +23,7 @@ class TwitterRawPipeListener(tweepy.StreamListener):
         self.output = open("raw_tweets.jsons", "a")
 
     def on_status(self, status):
-        self.output.write(status._json)
+        self.output.write(u"%s\n" % unicode(dumps(status._json)))
 
 
 class TwitterPipeListener(tweepy.StreamListener):
