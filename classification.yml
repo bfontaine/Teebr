@@ -1,3 +1,30 @@
+# Rules
+# -----
+#
+# 1. generate categories
+#    - merge top-level keys and meta entries: they're all categories
+#
+# 2. compile all regexps using smartcase
+#    - use case-insensitive matching only if the word/expression is lower-case
+#    - words should be "\btheword\b" and expressions "\bthe expression\b"
+#
+# 3. for each text:
+#       for each rule:
+#         try to match expressions *then* words (the longest expr/word the
+#         better)
+#
+# the goal of the meta entries is that we could re-run the matching on the
+# rules which share the same meta entries as the matched ones
+#
+# Each category adds an entry in the tweets/people vectors, e.g.:
+#   cat.social_media = 3.0
+#   cat.apple = -1.0
+#
+# etc
+#
+# We might also want to add vector entries weights somewhere in the app, e.g..
+# content (cat.* entries) is more important than (some) metadata.
+
 social_media:
   meta:
     - concept
@@ -180,6 +207,8 @@ cpp_lang:
     - programming
   words:
     - C++
+    - c++11
+    - c++14
 
 open_source:
   meta:
