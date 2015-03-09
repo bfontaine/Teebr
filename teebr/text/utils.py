@@ -2,6 +2,8 @@
 
 import re
 from unidecode import unidecode
+from HTMLParser import HTMLParser
+
 from textblob import TextBlob
 
 # codes from http://stackoverflow.com/a/12824140/735926
@@ -19,6 +21,7 @@ RE_EMOJI = re.compile(
 RE_HTTP = re.compile(r"\b(?:https?://\S+|https?:\.\.\.$)")
 
 RE_SPACES = re.compile(r"\s+")
+RE_NUMBERS = re.compile("\d+")
 
 RE_HTML_ENTITY = re.compile(r"&[a-z]+;")
 
@@ -50,6 +53,13 @@ NAMES_BLACKLIST = set([
     "The", "Of", "In",
 ])
 
+htmlparser = HTMLParser()
+
+
+def compile_OR_pattern(patterns, *args):
+    s = "(?:%s)" % "|".join([re.escape(p) for p in patterns])
+    return re.compile(s, *args)
+
 
 def contains_emoji(text):
     """
@@ -80,7 +90,7 @@ def normalize_text(text):
     text = unidecode(unicode(text))
 
     # remove HTML stuff
-    text = RE_HTML_ENTITY.sub("", text)
+    text = htmlparser.unescape(text)
 
     # remove URLs
     text = RE_HTTP.sub("", text)
@@ -99,6 +109,9 @@ def normalize_text(text):
 
     # replace slang
     text = unslangize(text)
+
+    # remove numbers (this is very aggressive)
+    text = RE_NUMBERS.sub("", text)
 
     # compact spaces
     text = RE_SPACES.sub(" ", text).strip()
