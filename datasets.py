@@ -2,6 +2,17 @@
 
 from json import loads
 from tweepy.models import Status
+from glob import glob
+
+_prefix = "datasets/statuses-"
+_suffix = ".jsons"
+
+_prefix_len = len(_prefix)
+_suffix_len = len(_suffix)
+
+def list():
+    return [s[_prefix_len:-_suffix_len] \
+            for s in glob("%s*%s" % (_prefix, _suffix))]
 
 def get(name, mx=10000):
     ss = []
