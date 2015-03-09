@@ -173,6 +173,8 @@ python:
     - Python
     - python2
     - python3
+  reject:
+    - Monty Python
 
 google:
   meta:
@@ -185,6 +187,9 @@ google:
     - Google Contacts
     - Google Voice
     - google hangouts
+  reject:
+    - "*google*"
+    - let me google that
 
 gmail:
   meta:
@@ -291,6 +296,8 @@ windows:
     - Windows 95
   words:
     - Windows
+  reject:
+    - Windows Phone
 
 osx:
   meta:
@@ -573,7 +580,7 @@ samsung:
     - company
     - samsung
   words:
-    Samsung
+    - Samsung
 
 samsung_mobile_products:
   meta:
