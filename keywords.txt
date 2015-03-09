@@ -47,7 +47,6 @@ viml
 visual basic
 zsh
 
-ant
 bower
 capistrano
 cocoapods
@@ -61,7 +60,6 @@ makefile
 maven
 npm
 opam
-pip
 puppet
 rakefile
 rubocop
@@ -85,20 +83,15 @@ sftp
 ssh
 telnet
 
-buffer overflow
-csrf
-ddos
-
 ajax
 angularjs
 backbonejs
 bootstrap
 d3js
-dns
+DNS
 dojojs
 dotjs
 emberjs
-http
 jquery
 leafletjs
 modernizr
@@ -108,8 +101,6 @@ reactjs
 requirejs
 reverse-proxy
 sigmajs
-vpn
-vps
 web developer
 web development
 zepto
@@ -121,7 +112,6 @@ Netflix
 Bitbucket
 Github
 Google
-Ibm
 Microsoft
 Ocamlpro
 Samsung
@@ -179,12 +169,11 @@ ia64
 llvm
 mips
 powerpc
-sparc
 x86
 raspberrypi
 arduino
 
-fsf
+FSF
 linus torvalds
 mozilla
 openstreetmap
