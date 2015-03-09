@@ -6,6 +6,7 @@ import re
 from collections import defaultdict
 
 from .text.utils import contains_emoji, extract_named_entities
+from .text.utils import compile_OR_pattern
 
 LANGUAGES = ('en',) # 'fr')
 
@@ -134,6 +135,26 @@ APPS_BLACKLIST = set([
 # some apps add numbers at the end, e.g. MySpam, MySpam1, MySpam2, etc
 END_DIGITS = re.compile(r"\s*\d+$")
 
+# really basic hand-made spam filter. The goal is to be as fast as possible
+# with as little false-positives as possible.
+SPAM_TERMS = compile_OR_pattern((
+    "via eBay http://",
+    "Full read by eBay http://", "Full read …", "Full rea…", "Full re…",
+    " #gameinsight", " #Gameinsight",
+    "Deals :",
+    "Deals TODAY",
+    "free Amazon ",
+    "Amazon e-Gift ",
+    "free shipping",
+))
+
+def seems_to_be_spam(text):
+    """
+    Return true if the given text seems to be spam(ish).
+    """
+    return bool(SPAM_TERMS.search(text))
+
+
 def filter_status(st):
     """
     Check if we should include a status as returned by the Streaming API in our
@@ -157,6 +178,10 @@ def filter_status(st):
 
     # remove manual RTs
     if st.text.startswith("RT @") or st.text.startswith("MT @"):
+        return False
+
+    # remove other spam tweets
+    if seems_to_be_spam(st.text):
         return False
 
     # ok
