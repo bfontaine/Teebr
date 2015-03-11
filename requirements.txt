@@ -5,12 +5,15 @@ Flask==0.10.1
 Flask-Admin==1.0.9
 Flask-Assets==0.9
 Flask-Babel==0.9
+Flask-OAuth==0.12
 gunicorn==18.0
+httplib2==0.9
 itsdangerous==0.24
 Jinja2==2.7.3
 MarkupSafe==0.23
 nltk==3.0.1
 numpy==1.9.1
+oauth2==1.5.211
 oauthlib==0.7.2
 peewee==2.4.7
 pep8==1.5.7
