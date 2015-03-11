@@ -9,7 +9,8 @@ parties.
 
 \begin{itemize}
   \item Récupération des données en utilisant l’\api{} Streaming de \twt{} avec
-    la bibliothèque \verb|tweepy|.
+    la bibliothèque \verb|tweepy| et \verb|pybayesantispam| pour filtrer les
+    tweets.
   \item Traitement et stockage des données, à l’aide des bibliothèques
     \verb|unidecode|, \verb|nltk| et \verb|textblob| pour le traitement et une
     base de données SQLite pour le stockage. Le code utilise la bibliothèque
@@ -33,6 +34,9 @@ L’ensemble du code, y compris les commentaires, est écrit en anglais, et le
 projet est versionné avec Git.
 
 \subsection{Données}
+
+Les données sont des tweets qui proviennent directement de Twitter, via son
+API.
 
 TODO
 
