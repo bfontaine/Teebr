@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from os import environ
+from os import environ as config
 
-config = environ
+# silent pyflakes
+config
