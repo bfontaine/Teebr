@@ -21,7 +21,7 @@ DIMS = 100
 
 tweets = []
 
-tw_count = 0
+#tw_count = 0
 
 with open("raw_tweets.jsons") as f:
     for line in f:
@@ -30,9 +30,9 @@ with open("raw_tweets.jsons") as f:
         if filter_status(t):
             tweet = normalize_text(t.text)
             tweets.append(tweet)
-            tw_count += 1
-            if tw_count >= 12000:
-                break
+            #tw_count += 1
+            #if tw_count >= 2000:
+            #    break
 
 # less tweets for the tests
 #tweets = tweets[:10000]
@@ -43,7 +43,7 @@ print "tweets: %d" % len(tweets)
 #vectorizer = make_pipeline(hasher, TfidfTransformer())
 
 vectorizer = TfidfVectorizer(max_df=0.8, max_features=2**32,
-                             min_df=0.001, stop_words='english',
+                             min_df=7, stop_words='english',
                                  use_idf=True)
 
 X = vectorizer.fit_transform(tweets)
