@@ -130,6 +130,7 @@ class Producer(User):
 
 
 class Consumer(User):
+    screen_name = CharField(index=True, unique=True)
 
     # Cache
     rated_statuses = IntegerField(default=0)
@@ -192,3 +193,8 @@ def dict2model(kv, model, create=False):
     if create:
         return model.create(**params)
     return model(**params)
+
+
+def status_to_dict(st):
+    # TODO
+    return {"text": st.text}

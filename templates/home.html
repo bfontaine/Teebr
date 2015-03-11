@@ -1,4 +1,4 @@
 {% extends "base.html" %}
 {% block body %}
-<p> {{ _("Soon… (hello @{})").format(g.user) }}</p>
+<p> {{ _("Soon… (hello @{})").format(g.user.screen_name) }}</p>
 {% endblock %}

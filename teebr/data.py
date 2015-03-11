@@ -35,8 +35,11 @@ class TwitterPipeListener(tweepy.StreamListener):
     def on_status(self, status):
         if not filter_status(status):
             return
-        #logger.debug("Importing status id '%s'" % status.id)
         import_status(status)
+
+    def on_error(self, status_code):
+        logger.warn("Error: got a status code %s, stopping" % status_code)
+        return False
 
 
 class TwitterPipe(object):
@@ -86,6 +89,7 @@ class TwitterPipe(object):
                 self.stream.filter(**params)
             else:
                 self.stream.sample(**params)
+            logger.debug("End of the pipeline")
         except KeyboardInterrupt:
             logger.debug("Stopping the API pipe due to keyboard interrupt")
 

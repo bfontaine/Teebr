@@ -2,16 +2,17 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from peewee import IntegrityError
+from peewee import IntegrityError, fn
 
 from .features import compute_features
 from .log import mkLogger
 from .models import create_tables, dict2model
-from .models import Status, Producer, Rating, db
+from .models import Status, Consumer, Producer, Rating, db
 
 logger = mkLogger("pipeline")
 
 def init_pipeline():
+    logger.debug("Creating tables")
     create_tables()
 
 
@@ -42,7 +43,7 @@ def import_status(st):
 
         status.save()
 
-    logger.debug("Imported status '%s' as '%s'" % (status.id_str, status.id))
+    #logger.debug("Imported status '%s' as '%s'" % (status.id_str, status.id))
 
     return status
 
@@ -61,6 +62,44 @@ def set_producer(producer, status, st_dict):
 
     producer.imported_statuses += 1
     producer.save()
+
+
+def get_consumer_profile(screen_name):
+    if screen_name is None:
+        return None
+
+    with db.transaction():
+        try:
+            consumer = Consumer.get(Consumer.screen_name == screen_name)
+        except Consumer.DoesNotExist:
+            logger.debug("Creating user '%s'" % screen_name)
+            consumer = Consumer.create(screen_name=screen_name)
+            consumer.save()
+        return consumer
+
+
+def get_unrated_statuses(user, count=20):
+    """
+    Return a random sample of statuses unrated by ``user`` of max ``count``.
+    """
+
+    # This could be optimized, we're using quick & dirty code for now
+
+    ratings = user.ratings
+    raw_statuses = Status.select().order_by(fn.Random()).limit(count*2)
+
+    statuses = []
+    for st in raw_statuses:
+        for rt in ratings:
+            if rt.status == st:
+                ratings.remove(rt)
+                continue
+        statuses.append(st)
+        count -= 1
+        if count <= 0:
+            break
+
+    return statuses
 
 
 def rate_status(consumer, status, st_dict, score):

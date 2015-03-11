@@ -1,13 +1,17 @@
 # -*- coding: UTF-8 -*-
 
+from json import dumps
+
 from flask import Flask, render_template, g, request, url_for, redirect
-from flask import session
+from flask import session, Response, abort
 from flask.ext.assets import Environment, Bundle
 from flask.ext.babel import Babel
 from webassets_iife import IIFE
 
-from teebr.log import mkLogger
 from teebr.admin import setup_admin
+from teebr.log import mkLogger
+from teebr.models import status_to_dict
+from teebr.pipeline import get_consumer_profile, get_unrated_statuses
 from teebr.web import twitter, authorize_oauth
 
 app = Flask(__name__)
@@ -68,7 +72,7 @@ assets.register('css_all', css)
 def set_current_user():
     username = session.get('twitter_user')
     if username and '/static/' not in request.path:
-        setattr(g, 'user', username)
+        setattr(g, 'user', get_consumer_profile(username))
 
 
 @app.before_request
@@ -123,3 +127,20 @@ def home():
         return redirect(url_for("home"))
 
     return render_template('home.html')
+
+
+# AJAX routes
+
+def json(what, code=200):
+    return Response(dumps(what), code, mimetype='application/json')
+
+def ajax(route):
+    return app.route("/_ajax%s" % route)
+
+@ajax("/user/statuses/unrated")
+def unrated_statuses_sample():
+    user = get_consumer_profile(session.get("twitter_user"))
+    if not user:
+        abort(404)
+
+    return json(map(status_to_dict, get_unrated_statuses(user)))
