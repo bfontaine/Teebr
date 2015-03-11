@@ -49,7 +49,7 @@ DEL_SLANGS = [re.compile(s, re.IGNORECASE) for s in (
 
 # names we don't want to extract
 NAMES_BLACKLIST = set([
-    "(", ")", "[", "]", "+", "|", "%", "...",
+    "(", ")", "[", "]", "+", "|", "%", "...", "~",
     "The", "Of", "In",
 ])
 
