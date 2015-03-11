@@ -1,1 +1,34 @@
 @import "utils.less";
+
+@twitter-bg: #1daee3;
+
+html {
+    height: 100%;
+}
+
+body.index {
+    background-image: url("/static/imgs/dock.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    color: #FCFCFC;
+
+    .title {
+        margin-bottom: 0;
+    }
+}
+
+.social-buttons {
+    margin-left: 5px;
+    margin-top: 20px;
+
+    .social-twitter {
+        color: #FAFAFA;
+        background-color: @twitter-bg;
+        border-color: #3997ba !important;
+
+        &:active, &:focus, &:hover {
+            background-color: darken(@twitter-bg, 2%)
+        }
+    }
+}

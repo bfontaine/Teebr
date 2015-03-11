@@ -3,3 +3,29 @@
 a.text {
   color: inherit;
 }
+html {
+  height: 100%;
+}
+body.index {
+  background-image: url("/static/imgs/dock.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #FCFCFC;
+}
+body.index .title {
+  margin-bottom: 0;
+}
+.social-buttons {
+  margin-left: 5px;
+  margin-top: 20px;
+}
+.social-buttons .social-twitter {
+  color: #FAFAFA;
+  background-color: #1daee3;
+  border-color: #3997ba !important;
+}
+.social-buttons .social-twitter:active,
+.social-buttons .social-twitter:focus,
+.social-buttons .social-twitter:hover {
+  background-color: #1ba7db;
+}

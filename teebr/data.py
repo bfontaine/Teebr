@@ -2,11 +2,11 @@
 
 from __future__ import absolute_import
 
-from os import environ
 from json import dumps
 
 import tweepy
 
+from .config import config
 from .features import filter_status, LANGUAGES
 from .log import mkLogger
 from .pipeline import import_status, init_pipeline
@@ -53,7 +53,7 @@ class TwitterPipe(object):
         keys = ("consumer_key", "consumer_secret", "access_token_key",
                 "access_token_secret")
 
-        kw = {k: environ["%s%s" % (prefix, k.upper())] for k in keys}
+        kw = {k: config["%s%s" % (prefix, k.upper())] for k in keys}
 
         # see https://github.com/tweepy/examples/blob/master/streamwatcher.py
         # for an example on how to create a stream handler

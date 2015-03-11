@@ -21,7 +21,7 @@
     <script src="/static/js/vendor/angular-locale_{{ g.locale }}.js"></script>
     {% endif %}
   </head>
-  <body class="app">
+  <body class="app {% block body_class %}{% endblock %}">
     {% block top_body %}{% endblock %}
     <div class="container">
       {% with messages = get_flashed_messages(with_categories=True) %}

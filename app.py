@@ -1,13 +1,14 @@
 # -*- coding: UTF-8 -*-
 
-from flask import Flask, render_template, g, request
+from flask import Flask, render_template, g, request, url_for, redirect
+from flask import session
 from flask.ext.assets import Environment, Bundle
 from flask.ext.babel import Babel
 from webassets_iife import IIFE
 
-from teebr.flaskutils import unlogged_only, logged_only, user
 from teebr.log import mkLogger
 from teebr.admin import setup_admin
+from teebr.web import twitter, authorize_oauth
 
 app = Flask(__name__)
 app.config.from_pyfile('teebr.cfg', silent=True)
@@ -63,11 +64,11 @@ css = Bundle(
 assets.register('css_all', css)
 
 
-#@app.before_request
-#def set_current_user():
-#    _id = session.get('_id')
-#    if _id and '/static/' not in request.path:
-#        setattr(g, 'user', store.get_user(_id=_id))
+@app.before_request
+def set_current_user():
+    username = session.get('twitter_user')
+    if username and '/static/' not in request.path:
+        setattr(g, 'user', username)
 
 
 @app.before_request
@@ -87,28 +88,38 @@ def get_locale():
             logger.debug("Known locale param: %s", locale_param)
             return locale_param
         logger.debug("Unknown locale param: %s", locale_param)
-    # 2. user.locale
-    u = user()
-    if u and u.locale:
-        logger.debug("Using user locale")
-        return u.locale
-    # 3. request header
+    # 2. request header
     logger.debug("locale: fall back in headers")
     return request.accept_languages.best_match(trs)
 
-# TODO
 
 @app.route('/')
-@unlogged_only
 def index():
+    if session.get("twitter_user"):
+        return redirect(url_for("home"))
+
     return render_template('main.html')
 
-@app.route('/login')
-@unlogged_only
-def login():
-    return render_template('login.html')
+@app.route('/_login/twitter')
+def twitter_login():
+    next_url = request.args.get('next') or request.referrer or url_for("home")
+    return twitter.authorize(callback=url_for('oauth_authorized', next=next_url))
+
+
+@app.route('/_logout/twitter')
+def twitter_logout():
+    session.clear()
+    return redirect(url_for("index"))
+
+
+@app.route('/_oauth/twitter')
+@twitter.authorized_handler
+def oauth_authorized(resp):
+    return authorize_oauth(resp)
 
 @app.route('/home')
-@logged_only
 def home():
+    if not session.get("twitter_user"):
+        return redirect(url_for("home"))
+
     return render_template('home.html')
