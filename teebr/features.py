@@ -5,8 +5,9 @@ from __future__ import absolute_import, unicode_literals
 import re
 from collections import defaultdict
 
+import bayes
+
 from .text.utils import contains_emoji, extract_named_entities
-from .text.utils import compile_OR_pattern
 
 LANGUAGES = ('en',) # 'fr')
 
@@ -135,24 +136,9 @@ APPS_BLACKLIST = set([
 # some apps add numbers at the end, e.g. MySpam, MySpam1, MySpam2, etc
 END_DIGITS = re.compile(r"\s*\d+$")
 
-# really basic hand-made spam filter. The goal is to be as fast as possible
-# with as little false-positives as possible.
-SPAM_TERMS = compile_OR_pattern((
-    "via eBay http://",
-    "Full read by eBay http://", "Full read …", "Full rea…", "Full re…",
-    " #gameinsight", " #Gameinsight",
-    "Deals :",
-    "Deals TODAY",
-    "free Amazon ",
-    "Amazon e-Gift ",
-    "free shipping",
-))
-
-def seems_to_be_spam(text):
-    """
-    Return true if the given text seems to be spam(ish).
-    """
-    return bool(SPAM_TERMS.search(text))
+storage = bayes.Storage("bayes.dat", 10)
+storage.load()
+spamFilter = bayes.Bayes(storage).is_spam
 
 
 def filter_status(st):
@@ -181,7 +167,7 @@ def filter_status(st):
         return False
 
     # remove other spam tweets
-    if seems_to_be_spam(st.text):
+    if spamFilter(st.text):
         return False
 
     # ok
