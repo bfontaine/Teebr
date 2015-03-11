@@ -21,8 +21,6 @@ pytz==2014.10
 PyYAML==3.11
 requests==2.4.3
 requests-oauthlib==0.4.1
-scikit-learn==0.15.2
-scipy==0.15.1
 simplejson==3.6.5
 six==1.7.3
 speaklater==1.3
