@@ -1,0 +1,30 @@
+@status-color: #333;
+@status-link-color: #3bafda;
+@status-symbol-color: lighten(@status-color, 10%);
+
+.status-hash, .status-cash, .status-at {
+  color: @status-symbol-color;
+}
+
+.status-hashtag {
+  font-weight: bold;
+
+  .status-hashtag-content {}
+}
+
+.status-cashtag {
+  .status-cashtag-content {}
+}
+
+.status-mention {
+  .status-mention-content {}
+}
+
+.status-link {
+  color: @status-link-color;
+
+  .status-link-protocol {
+    display: none;
+  }
+  .status-link-url {}
+}

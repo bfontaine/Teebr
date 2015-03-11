@@ -3,6 +3,9 @@
 a.text {
   color: inherit;
 }
+.top20 {
+  margin-top: 20px;
+}
 html {
   height: 100%;
 }
@@ -15,17 +18,45 @@ body.index {
 body.index .title {
   margin-bottom: 0;
 }
-.social-buttons {
+body.index .social-buttons {
   margin-left: 5px;
   margin-top: 20px;
 }
-.social-buttons .social-twitter {
+body.index .social-buttons .social-twitter {
   color: #FAFAFA;
   background-color: #1daee3;
   border-color: #3997ba !important;
 }
-.social-buttons .social-twitter:active,
-.social-buttons .social-twitter:focus,
-.social-buttons .social-twitter:hover {
+body.index .social-buttons .social-twitter:active,
+body.index .social-buttons .social-twitter:focus,
+body.index .social-buttons .social-twitter:hover {
   background-color: #1ba7db;
+}
+body.home .status-hash,
+body.home .status-cash,
+body.home .status-at {
+  color: #4d4d4d;
+}
+body.home .status-hashtag {
+  font-weight: bold;
+}
+body.home .status-link {
+  color: #3bafda;
+}
+body.home .status-link .status-link-protocol {
+  display: none;
+}
+body.home .statuses-feed {
+  margin-top: 50px;
+}
+body.home .status-content {
+  font-size: 3rem;
+  border: 1px solid #DDD;
+}
+body.home .status-actions .btn {
+  font-size: 1.4em;
+  color: #FEFEFE;
+}
+body.home .status-other-actions {
+  text-align: center;
 }

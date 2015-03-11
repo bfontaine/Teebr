@@ -1,4 +1,32 @@
 {% extends "base.html" %}
+{% block html_attrs %}ng-app="tbTeebr"{% endblock %}
+{% block body_class %}home{% endblock %}
+{% block body_attrs %}ng-controller="tbHomeCtrl"{% endblock %}
 {% block body %}
-<p> {{ _("Soon… (hello @{})").format(g.user.screen_name) }}</p>
+<h1>{{ _("@{}’s Teebr").format(g.user.screen_name) }}</h1>
+
+<div class="statuses-feed" w-mousetrap="{s: skipStatus, left:rateStatusYes, right: rateStatusNo}">
+  <div class="row">
+    <div class="status col-md-8 col-md-offset-2">
+      <div class="row">
+        <div class="status-content col-md-12">
+          <span class="status-text" ng-bind-html="status.text | tweet_html"></span>
+        </div>
+      </div>
+      <div class="row status-actions top20">
+        <a href="#"
+           class="col-md-3 col-md-offset-2 btn btn-success btn-lg"
+           ng-click="rateStatus(true)">{{ _("Yep") }}</a>
+        <a href="#"
+           class="col-md-2 col-md-offset-2 btn btn-danger btn-lg"
+           ng-click="rateStatus(false)">{{ _("Nope") }}</a>
+      </div>
+      <div class="status-other-actions top20">
+        <a href="#" ng-click="skipStatus()">{{ _("Skip") }}</a>&nbsp;{#
+          #}&bull;&nbsp;<a href="#" ng-click="reportAsSpam()">{{ _("Report as Spam") }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
