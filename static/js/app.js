@@ -13,6 +13,8 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
 
   var endpoints = {
     unrated_sample: '/_ajax/user/statuses/unrated',
+    rate: '/_ajax/user/statuses/rate',
+    report: '/_ajax/user/statuses/report',
   };
 
   /** Initialization *********************************************************/
@@ -30,6 +32,10 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
 
   function get(endpoint, data) {
     return $http.get(endpoints[endpoint], data);
+  }
+
+  function post(endpoint, data) {
+    return $http.post(endpoints[endpoint], data);
   }
 
   /** Statuses ***************************************************************/
@@ -66,9 +72,12 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
   /*- Rating ----------------------------------------------------------------*/
 
   $scope.rateStatus = function rateStatus(result) {
-    console.log("rated: " + result); // TODO
-
-    $scope.nextStatus();
+    post("rate", {
+      id: $scope.status.id,
+      score: result,
+    }).success(function() {
+      $scope.nextStatus();
+    });
   };
 
   $scope.skipStatus = function skipStatus() {
@@ -76,14 +85,13 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
   };
 
   $scope.reportAsSpam = function reportAsSpam() {
-    console.log("should be spam.");  // TODO
-
+    post("report", { id: $scope.status.id });
     $scope.nextStatus();
   };
 
   // shortcuts
-  $scope.rateStatusYes = function y() { return $scope.rateStatus(true); };
-  $scope.rateStatusNo = function n() { return $scope.rateStatus(false); };
+  $scope.rateStatusYes = function y() { return $scope.rateStatus(1); };
+  $scope.rateStatusNo = function n() { return $scope.rateStatus(0); };
 
   /** Alerts *****************************************************************/
 

@@ -48,7 +48,7 @@ def import_status(st):
     return status
 
 
-def update_user_sg(user, st_dict, factor=1):
+def update_user_sg_from_dict(user, st_dict, factor=1):
     factor = float(factor)
     d_u = user.__dict__["_data"]
     for k,v in st_dict.items():
@@ -56,9 +56,18 @@ def update_user_sg(user, st_dict, factor=1):
             d_u[k] += v * factor
 
 
+def update_user_sg_from_status(user, st, factor=1):
+    factor = float(factor)
+    d_u = user.__dict__["_data"]
+    st_dict = st.__dict__["_data"]
+    for k,v in st_dict.items():
+        if k.startswith("sg_"):
+            d_u[k] += v * factor
+
+
 def set_producer(producer, status, st_dict):
     status.author = producer
-    update_user_sg(producer, st_dict, 1)
+    update_user_sg_from_dict(producer, st_dict, 1)
 
     producer.imported_statuses += 1
     producer.save()
@@ -102,11 +111,18 @@ def get_unrated_statuses(user, count=20):
     return statuses
 
 
-def rate_status(consumer, status, st_dict, score):
+def rate_status(consumer, status_id, score):
+    status = Status.get(Status.id == Status.id)
+
     with db.transaction():
         r = Rating.create(consumer=consumer, status=status, score=score)
         consumer.rated_statuses += 1
         r.save()
 
-        update_user_sg(consumer, st_dict, score)
+        update_user_sg_from_status(consumer, status, score)
         consumer.save()
+
+
+def mark_status_as_spam(status_id):
+    # TODO
+    pass

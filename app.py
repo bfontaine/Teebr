@@ -12,6 +12,7 @@ from teebr.admin import setup_admin
 from teebr.log import mkLogger
 from teebr.models import status_to_dict
 from teebr.pipeline import get_consumer_profile, get_unrated_statuses
+from teebr.pipeline import rate_status, mark_status_as_spam
 from teebr.web import twitter, authorize_oauth
 
 app = Flask(__name__)
@@ -134,8 +135,9 @@ def home():
 def json(what, code=200):
     return Response(dumps(what), code, mimetype='application/json')
 
-def ajax(route):
-    return app.route("/_ajax%s" % route)
+def ajax(route, *args, **kw):
+    return app.route("/_ajax%s" % route, *args, **kw)
+
 
 @ajax("/user/statuses/unrated")
 def unrated_statuses_sample():
@@ -144,3 +146,47 @@ def unrated_statuses_sample():
         abort(404)
 
     return json(map(status_to_dict, get_unrated_statuses(user)))
+
+
+@ajax("/user/statuses/rate", methods=["POST"])
+def user_rate_status():  # ?score={0,1}&id=...
+    user = get_consumer_profile(session.get("twitter_user"))
+    if not user:
+        logger.warn("Can't find rating user")
+        abort(403)
+
+    payload = request.get_json()
+    if not payload:
+        abort(400)
+
+    score = payload['score']
+    st_id = int(payload['id'])
+
+    if score not in (0, 1):
+        logger.debug("Invalid score: %s" % score)
+        abort(400)
+
+    if score == 0:
+        score = -1
+
+    rate_status(user, st_id, score)
+
+    return json(None)
+
+
+@ajax("/user/statuses/report", methods=["POST"])
+def user_report_spam():  # ? id=...
+    user = get_consumer_profile(session.get("twitter_user"))
+    if not user:
+        logger.warn("Can't find rating user")
+        abort(403)
+
+    payload = request.get_json()
+    if not payload:
+        abort(400)
+
+    st_id = int(payload['id'])
+
+    mark_status_as_spam(st_id)
+
+    return json(None)

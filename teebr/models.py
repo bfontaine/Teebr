@@ -197,4 +197,7 @@ def dict2model(kv, model, create=False):
 
 def status_to_dict(st):
     # TODO
-    return {"text": st.text}
+    return {
+        "id": st.id,
+        "text": st.text,
+    }
