@@ -38,6 +38,7 @@ class TwitterPipeListener(tweepy.StreamListener):
         import_status(status)
 
     def on_error(self, status_code):
+        print "Error %s" % status_code
         logger.warn("Error: got a status code %s, stopping" % status_code)
         return False
 
@@ -76,10 +77,12 @@ class TwitterPipe(object):
         filters = False
 
         if follow_ids is not None:
+            logger.debug("Following %d ids" % len(follow_ids))
             filters = True
             params["follow"] = follow_ids
 
         if keywords is not None:
+            logger.debug("Tracking %d keywords" % len(keywords))
             filters = True
             params["track"] = keywords
 
