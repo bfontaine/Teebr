@@ -35,10 +35,32 @@ projet est versionné avec Git.
 
 \subsection{Données}
 
-Les données sont des tweets qui proviennent directement de Twitter, via son
-API.
+Les données sont des \tweets{} qui proviennent directement de \twt{}, via son
+\api{}. Elles ne sont pas fixées, et le projet est conçu pour fonctionner avec
+n’importe quel ensemble de \tweets{}, qui sont importés à l’aide d’un script.
 
-TODO
+\subsubsection{Sélection}
+
+Le flux de \tweets{} récupéré depuis l’\api{} \twt{} doit être filtré pour être
+intéressant. On se connecte à l’\api{} en envoyant une liste de mots-clefs
+(\verb|keywords.txt|) à suivre, et celle-ci nous envoit un échantillon des
+tweets qui mentionnent ceux-ci en temps réel. La liste de mots-clefs compte
+environ 170 termes renseignés à la main pour couvrir le thème des nouvelles
+technologies. Elle comprend notamment la liste des langages de programmation
+les plus utilisés sur GitHub\footnote{http://githut.info/} ainsi qu’une liste
+d’entreprises comme Google, Amazon et Apple.
+
+Chaque \tweet{} passe ensuite une série de filtres\footnote{Voir
+\verb|teebr.features.filter_status|} pour éliminer les tweets en langue autre
+que l’anglais, les réponses et \rts{} ainsi que les spams. Ce dernier filtre se
+base sur un filtre Bayésien simple, entraîné à la main sur environ 300
+\tweets{}\footnote{Voir \verb|scripts/train_spam.py|}.
+
+Enfin, les auteurs des \tweets{} sont également importés dans la base de
+données, puisque c’est eux que l’on souhaite recommander. Toutes les
+informations renvoyées par l’\api{} sont stockées, notamment les compteurs de
+\tweets{}, abonnés, favoris ainsi que les informations du profil tel que la
+biographie, l’avatar ou le site Web.
 
 \subsection{Traitement}
 
