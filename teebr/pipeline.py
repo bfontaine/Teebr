@@ -126,3 +126,13 @@ def rate_status(consumer, status_id, score):
 def mark_status_as_spam(status_id):
     # TODO
     pass
+
+
+def reset_user_ratings(consumer):
+    screen_name = consumer.screen_name
+
+    # delete
+    consumer.delete_instance(recursive=True)
+
+    # re-create
+    get_consumer_profile(screen_name)

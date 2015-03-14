@@ -132,8 +132,16 @@ class Producer(User):
 class Consumer(User):
     screen_name = CharField(index=True, unique=True)
 
+    language = CharField(default="en")
+
     # Cache
     rated_statuses = IntegerField(default=0)
+
+    def to_jsonable_dict(self):
+        return {
+            "rated_statuses": self.rated_statuses,
+            "language": self.language
+        }
 
 
 class Status(ContentSignature):
@@ -196,7 +204,6 @@ def dict2model(kv, model, create=False):
 
 
 def status_to_dict(st):
-    # TODO
     return {
         "id": st.id,
         "text": st.text,

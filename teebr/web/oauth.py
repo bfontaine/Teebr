@@ -4,7 +4,7 @@ from flask import session, request, redirect, url_for, flash
 from flask.ext.babel import gettext
 from flask_oauth import OAuth
 
-from .config import config
+from ..config import config
 
 oauth = OAuth()
 

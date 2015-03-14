@@ -2,30 +2,24 @@
 
 from json import dumps
 
-from flask import Flask, render_template, g, request, url_for, redirect
+from flask import render_template, g, request, url_for, redirect
 from flask import session, Response, abort
+from flask.ext.babel import gettext
 from flask.ext.assets import Environment, Bundle
-from flask.ext.babel import Babel
 from webassets_iife import IIFE
 
 from teebr.admin import setup_admin
 from teebr.log import mkLogger
 from teebr.models import status_to_dict
 from teebr.pipeline import get_consumer_profile, get_unrated_statuses
-from teebr.pipeline import rate_status, mark_status_as_spam
-from teebr.web import twitter, authorize_oauth
-
-app = Flask(__name__)
-app.config.from_pyfile('teebr.cfg', silent=True)
+from teebr.pipeline import rate_status, mark_status_as_spam, reset_user_ratings
+from teebr.web import twitter, authorize_oauth, app, babel
 
 # admin
 setup_admin(app)
 
 # logs
 logger = mkLogger('app')
-
-# i18n
-babel = Babel(app)
 
 # assets
 assets = Environment(app)
@@ -36,7 +30,7 @@ css_filters = []
 if not app.config['DEBUG']:
     js_filters += [IIFE] #, 'closure_js']
     css_filters += ['cssmin']
-    assets.config["CLOSURE_EXTRA_ARGS"] = ['--language_in', 'ECMASCRIPT5']
+    #assets.config["CLOSURE_EXTRA_ARGS"] = ['--language_in', 'ECMASCRIPT5']
 
 # - JS
 js = Bundle(
@@ -77,6 +71,11 @@ def set_current_user():
 
 
 @app.before_request
+def set_header():
+    setattr(g, 'header', 'Teebr')
+
+
+@app.before_request
 def set_g_locale():
     if '/static/' not in request.path:
         logger.debug("setting user locale...")
@@ -85,7 +84,7 @@ def set_g_locale():
 
 @babel.localeselector
 def get_locale():
-    trs = [str(t) for t in babel.list_translations()]
+    trs = [str(l) for l in babel.list_translations()]
     # 1. ?locale=
     locale_param = request.args.get('locale') or request.args.get('lang')
     if locale_param:
@@ -93,14 +92,18 @@ def get_locale():
             logger.debug("Known locale param: %s", locale_param)
             return locale_param
         logger.debug("Unknown locale param: %s", locale_param)
-    # 2. request header
+    # 2. user.locale
+    if g.user and g.user.language[:2] in trs:
+        logger.debug("Using user locale")
+        return g.user.language
+    # 3. request header
     logger.debug("locale: fall back in headers")
     return request.accept_languages.best_match(trs)
 
 
 @app.route('/')
 def index():
-    if session.get("twitter_user"):
+    if g.user:
         return redirect(url_for("home"))
 
     return render_template('main.html')
@@ -124,11 +127,22 @@ def oauth_authorized(resp):
 
 @app.route('/home')
 def home():
-    if not session.get("twitter_user"):
-        return redirect(url_for("home"))
+    if not g.user:
+        return redirect(url_for("index"))
 
     return render_template('home.html')
 
+
+@app.route('/settings')
+def user_settings():
+    if not g.user:
+        return redirect(url_for("index"))
+
+    langs = babel.list_translations()
+    lst = [{"code": l.language, "display": l.display_name} for l in langs]
+
+    g.header = gettext("Settings")
+    return render_template('settings.html', languages=lst)
 
 # AJAX routes
 
@@ -141,17 +155,15 @@ def ajax(route, *args, **kw):
 
 @ajax("/user/statuses/unrated")
 def unrated_statuses_sample():
-    user = get_consumer_profile(session.get("twitter_user"))
-    if not user:
+    if not g.user:
         abort(404)
 
-    return json(map(status_to_dict, get_unrated_statuses(user)))
+    return json(map(status_to_dict, get_unrated_statuses(g.user)))
 
 
 @ajax("/user/statuses/rate", methods=["POST"])
 def user_rate_status():  # ?score={0,1}&id=...
-    user = get_consumer_profile(session.get("twitter_user"))
-    if not user:
+    if not g.user:
         logger.warn("Can't find rating user")
         abort(403)
 
@@ -169,16 +181,15 @@ def user_rate_status():  # ?score={0,1}&id=...
     if score == 0:
         score = -1
 
-    rate_status(user, st_id, score)
+    rate_status(g.user, st_id, score)
 
     return json(None)
 
 
 @ajax("/user/statuses/report", methods=["POST"])
 def user_report_spam():  # ? id=...
-    user = get_consumer_profile(session.get("twitter_user"))
-    if not user:
-        logger.warn("Can't find rating user")
+    if not g.user:
+        logger.warn("Can't find reporting user")
         abort(403)
 
     payload = request.get_json()
@@ -188,5 +199,16 @@ def user_report_spam():  # ? id=...
     st_id = int(payload['id'])
 
     mark_status_as_spam(st_id)
+
+    return json(None)
+
+
+@ajax("/user/reset-account", methods=["POST"])
+def user_reset_account():
+    if not g.user:
+        logger.warn("Can't find reset an unknown user")
+        abort(403)
+
+    reset_user_ratings(g.user)
 
     return json(None)

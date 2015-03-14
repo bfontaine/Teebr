@@ -170,6 +170,10 @@ def filter_status(st):
     if spamFilter(st.text):
         return False
 
+    # remove RTs
+    if hasattr(st, 'retweeted_status') and st.retweeted_status:
+        return False
+
     # ok
     return True
 
