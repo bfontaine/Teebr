@@ -1,24 +1,23 @@
-{% extends "base.html" %}
-{% block html_attrs %}ng-app="tbTeebr"{% endblock %}
+{% extends "connected_base.html" %}
 {% block body_class %}home{% endblock %}
 {% block body_attrs %}ng-controller="tbHomeCtrl"{% endblock %}
 {% block body %}
-<h1>{{ _("@{}’s Teebr").format(g.user.screen_name) }}</h1>
+{{ super() }}
 
 <div class="statuses-feed" w-mousetrap="{s: skipStatus, left:rateStatusYes, right: rateStatusNo}">
   <div class="row">
     <div class="status col-md-8 col-md-offset-2">
       <div class="row">
-        <div class="status-content col-md-12">
-          <span class="status-text" ng-bind-html="status.text | tweet_html"></span>
-        </div>
+        <div class="status-content col-sm-12">{#
+          #}<span class="status-text" ng-bind-html="status.text | tweet_html"></span>{#
+        #}</div>
       </div>
-      <div class="row status-actions top20">
+      <div class="row status-actions top40">
         <a href="#"
-           class="col-md-3 col-md-offset-2 btn btn-success btn-lg"
+           class="col-sm-3 col-sm-offset-2 btn btn-success btn-lg"
            ng-click="rateStatusYes()">{{ _("Yep") }}</a>
         <a href="#"
-           class="col-md-2 col-md-offset-2 btn btn-danger btn-lg"
+           class="col-sm-2 col-sm-offset-2 btn btn-danger btn-lg"
            ng-click="rateStatusNo()">{{ _("Nope") }}</a>
       </div>
       <div class="status-other-actions top20">

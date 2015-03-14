@@ -1,0 +1,54 @@
+{% extends "connected_base.html" %}
+{% block body_class %}user-settings{% endblock %}
+{% block body_attrs %}ng-controller="tbUserSettingsCtrl"{% endblock %}
+{% block body %}
+{{ super() }}
+
+<div class="user-settings-container row">
+    <form class="user-settings form col-md-4 col-md-offset-4">
+
+        <div class="form-horizontal">
+
+            <div class="form-group">
+                <label for="lang" class="control-label col-sm-3">{{ _("Language:") }}</label>
+                <div class="col-sm-9">
+                    <select id="lang" class="form-control"
+                            ng-model="user.language"
+                            ng-options="l.code as l.display for l in languages">
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+
+        <h2>{{ _("Stats") }}</h2>
+
+        <p>{{ _("You rated <b>{} Tweets</b> so far.").format("_{user.rated_statuses}_") | safe }}
+           <a href="/home" class="text">{{ _("Go on!") }}</a>
+        </p>
+
+        <h2>{{ _("Danger Zone") }}</h2>
+
+        <p class="light-help">
+           {{ _("Resetting your Teebr account won’t harm your Twitter one.") }}
+           {{ _("It’ll delete all your ratings and restore your account to an
+                 empty state.") }}
+            <strong>{{ _("You can’t undo this.") }}</strong>
+        </p>
+        <input type="button"
+               ng-click="resetAccount()"
+               class="btn btn-danger"
+               value="{{ _("Reset my account") }}"/>
+
+    </form>
+</div>
+
+<script type="text/x-json" id="user">{{
+    g.user.to_jsonable_dict() | tojson | safe
+}}</script>
+<script type="text/x-json" id="languages">{{
+    languages | tojson |safe
+}}</script>
+
+{% endblock %}

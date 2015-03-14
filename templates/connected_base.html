@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block html_attrs %}ng-app="tbTeebr"{% endblock %}
+{% block body %}
+<h1>{{ _("@{}’s").format(g.user.screen_name) }} {{ g.header }}</h1>
+{% endblock %}

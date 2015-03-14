@@ -93,36 +93,33 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
   $scope.rateStatusYes = function y() { return $scope.rateStatus(1); };
   $scope.rateStatusNo = function n() { return $scope.rateStatus(0); };
 
-  /** Alerts *****************************************************************/
-
-  $scope.alerts = [];
-  $scope.closeAlert = function(alert) {
-    var idx = $scope.alerts.indexOf(alert);
-    if (idx < 0) { return; }
-    $scope.alerts.splice(idx, 1);
-  };
-
-  /*
-    Examples:
-      addAlert("my message");                // warning msg
-      addAlert("my message", "info");        // info msg
-      addAlert("my message", "info", 3000);  // fade 3s later
-      addAlert("my message", "info", false); // don't fade
-  */
-  $scope.addAlert = function(msg, type_, timeout) {
-    var alert = {msg: msg, type: type_ || 'warning'};
-    $scope.alerts.push(alert);
-
-    if (timeout !== false) {
-      // hide alerts after 4sec
-      $timeout(function() {
-        $scope.closeAlert(alert);
-      }, timeout || 4000);
-    }
-  };
-
   init();
 }]);
+
+app.controller('tbUserSettingsCtrl', ['$scope', '$http', '$document',
+    function tbHomeCtrl($scope, $http, $document) {
+
+  _scope = $scope; // debug
+
+  $document.ready(function() {
+    $scope.user = JSON.parse($("#user").html());
+    $scope.languages = JSON.parse($("#languages").html());
+
+    $scope.$apply();
+  });
+
+  $scope.resetAccount = function resetAccount() {
+    $http.post("/_ajax/user/reset-account")
+         .success(function() { $scope.user.rated_statuses = 0; });
+  };
+
+  $scope.$watch("user", function(oldUser, newUser) {
+      console.log("TODO");
+  }, true);
+
+}]);
+
+/*== Filters ================================================================*/
 
 app.filter("tweet_html", ["$sce", function($sce) {
 
