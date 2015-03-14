@@ -12,6 +12,27 @@ a.text {
 html {
   height: 100%;
 }
+.user-menu-container {
+  position: fixed;
+  top: 30px;
+  right: 40px;
+  font-size: 30px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.user-menu-container .user-menu-items {
+  top: 120%;
+  left: -130px;
+  background-color: white;
+}
+.user-menu-container .user-menu-items a {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #434a54;
+}
 body.index {
   background-image: url("/static/imgs/dock.jpeg");
   background-repeat: no-repeat;

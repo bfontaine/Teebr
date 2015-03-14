@@ -2,4 +2,16 @@
 {% block html_attrs %}ng-app="tbTeebr"{% endblock %}
 {% block body %}
 <h1>{{ g.header }}</h1>
+
+<div class="dropdown user-menu-container">
+  <i class="glyphicon glyphicon-menu-hamburger user-menu-icon"
+     data-toggle="dropdown"></i>
+
+  <ul class="dropdown-menu user-menu-items" role="menu">
+    <li><a href="{{ url_for("home") }}">{{ _("Home") }}</a></li>
+    <li><a href="{{ url_for("user_settings") }}">{{ _("Settings") }}</a></li>
+    <li><a href="{{ url_for("twitter_logout") }}">{{ _("Logout") }}</a></li>
+  </ul>
+</div>
+
 {% endblock %}

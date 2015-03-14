@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-14 12:33+0100\n"
+"POT-Creation-Date: 2015-03-14 13:08+0100\n"
 "PO-Revision-Date: 2015-03-11 21:45+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -32,6 +32,19 @@ msgstr "Réglages de @{}"
 #: teebr/web/oauth.py:36
 msgid "You denied the request to sign in."
 msgstr "Vous avez refusé la requête de connexion."
+
+#: templates/connected_base.html:11
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/connected_base.html:12
+#, fuzzy
+msgid "Settings"
+msgstr "Réglages de @{}"
+
+#: templates/connected_base.html:13
+msgid "Logout"
+msgstr "Déconnexion"
 
 #: templates/home.html:18
 msgid "Yep"
@@ -98,10 +111,3 @@ msgstr "Vous ne pouvez pas annuler cette action."
 #: templates/settings.html:42
 msgid "Reset my account"
 msgstr "Réinitialiser mon compte"
-
-#~ msgid "@{}’s"
-#~ msgstr ""
-
-#~ msgid "You denied the request to sign in."
-#~ msgstr ""
-
