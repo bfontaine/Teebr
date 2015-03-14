@@ -113,8 +113,15 @@ app.controller('tbUserSettingsCtrl', ['$scope', '$http', '$document',
          .success(function() { $scope.user.rated_statuses = 0; });
   };
 
-  $scope.$watch("user", function(oldUser, newUser) {
-      console.log("TODO");
+  $scope.$watch("user", function(newUser, oldUser) {
+    if (!oldUser || !newUser) { return; }
+
+    $http.post("/_ajax/user/settings", {"settings": newUser})
+         .success(function(data) {
+           if (data.reload) {
+             document.location.reload(true);
+           }
+         });
   }, true);
 
 }]);

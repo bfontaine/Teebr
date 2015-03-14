@@ -2,12 +2,11 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from peewee import IntegrityError, fn
+from peewee import IntegrityError
 
 from .features import compute_features
 from .log import mkLogger
-from .models import create_tables, dict2model
-from .models import Status, Consumer, Producer, Rating, db
+from .models import create_tables, dict2model, Rating, Status, Producer, db
 
 logger = mkLogger("pipeline")
 
@@ -73,44 +72,6 @@ def set_producer(producer, status, st_dict):
     producer.save()
 
 
-def get_consumer_profile(screen_name):
-    if screen_name is None:
-        return None
-
-    with db.transaction():
-        try:
-            consumer = Consumer.get(Consumer.screen_name == screen_name)
-        except Consumer.DoesNotExist:
-            logger.debug("Creating user '%s'" % screen_name)
-            consumer = Consumer.create(screen_name=screen_name)
-            consumer.save()
-        return consumer
-
-
-def get_unrated_statuses(user, count=20):
-    """
-    Return a random sample of statuses unrated by ``user`` of max ``count``.
-    """
-
-    # This could be optimized, we're using quick & dirty code for now
-
-    ratings = user.ratings
-    raw_statuses = Status.select().order_by(fn.Random()).limit(count*2)
-
-    statuses = []
-    for st in raw_statuses:
-        for rt in ratings:
-            if rt.status == st:
-                ratings.remove(rt)
-                continue
-        statuses.append(st)
-        count -= 1
-        if count <= 0:
-            break
-
-    return statuses
-
-
 def rate_status(consumer, status_id, score):
     status = Status.get(Status.id == Status.id)
 
@@ -121,18 +82,3 @@ def rate_status(consumer, status_id, score):
 
         update_user_sg_from_status(consumer, status, score)
         consumer.save()
-
-
-def mark_status_as_spam(status_id):
-    # TODO
-    pass
-
-
-def reset_user_ratings(consumer):
-    screen_name = consumer.screen_name
-
-    # delete
-    consumer.delete_instance(recursive=True)
-
-    # re-create
-    get_consumer_profile(screen_name)

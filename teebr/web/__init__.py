@@ -15,5 +15,8 @@ app.config.from_pyfile('teebr.cfg')
 babel = Babel(app)
 
 
-def get_languages():
-    return babel.list_translations()
+def get_languages(as_str=False):
+    langs = babel.list_translations()
+    if as_str:
+        return map(str, langs)
+    return langs

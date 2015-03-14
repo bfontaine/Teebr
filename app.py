@@ -11,9 +11,11 @@ from webassets_iife import IIFE
 from teebr.admin import setup_admin
 from teebr.log import mkLogger
 from teebr.models import status_to_dict
-from teebr.pipeline import get_consumer_profile, get_unrated_statuses
-from teebr.pipeline import rate_status, mark_status_as_spam, reset_user_ratings
-from teebr.web import twitter, authorize_oauth, app, babel
+from teebr.pipeline import rate_status
+from teebr.users import get_consumer_profile, get_unrated_statuses
+from teebr.users import set_user_settings, mark_status_as_spam
+from teebr.users import reset_user_ratings
+from teebr.web import twitter, authorize_oauth, app, babel, get_languages
 
 # admin
 setup_admin(app)
@@ -84,7 +86,7 @@ def set_g_locale():
 
 @babel.localeselector
 def get_locale():
-    trs = [str(l) for l in babel.list_translations()]
+    trs = get_languages(True)
     # 1. ?locale=
     locale_param = request.args.get('locale') or request.args.get('lang')
     if locale_param:
@@ -212,3 +214,18 @@ def user_reset_account():
     reset_user_ratings(g.user)
 
     return json(None)
+
+
+@ajax("/user/settings", methods=["POST"])
+def user_change_settings():
+    if not g.user:
+        logger.warn("Can't change settings of an unknown user")
+        abort(403)
+
+    payload = request.get_json()
+    if not payload:
+        abort(400)
+
+    changed = set_user_settings(g.user, payload["settings"])
+
+    return json({"reload": changed})
