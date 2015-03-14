@@ -64,17 +64,22 @@ css = Bundle(
     output='css/teebr.css')
 assets.register('css_all', css)
 
+def user_header(s):
+    g.header = s.format(g.user.screen_name)
+
 
 @app.before_request
 def set_current_user():
     username = session.get('twitter_user')
     if username and '/static/' not in request.path:
         setattr(g, 'user', get_consumer_profile(username))
+    else:
+        setattr(g, 'user', None)
 
 
 @app.before_request
 def set_header():
-    setattr(g, 'header', 'Teebr')
+    setattr(g, 'header', gettext('Teebr'))
 
 
 @app.before_request
@@ -132,6 +137,7 @@ def home():
     if not g.user:
         return redirect(url_for("index"))
 
+    user_header(gettext(u"@{}’s Home"))
     return render_template('home.html')
 
 
@@ -143,7 +149,7 @@ def user_settings():
     langs = babel.list_translations()
     lst = [{"code": l.language, "display": l.display_name} for l in langs]
 
-    g.header = gettext("Settings")
+    user_header(gettext(u"@{}’s Settings"))
     return render_template('settings.html', languages=lst)
 
 # AJAX routes
