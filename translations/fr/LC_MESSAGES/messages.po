@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-03-14 13:08+0100\n"
+"POT-Creation-Date: 2015-03-15 11:12+0100\n"
 "PO-Revision-Date: 2015-03-11 21:45+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: fr <LL@li.org>\n"
@@ -38,9 +38,8 @@ msgid "Home"
 msgstr "Accueil"
 
 #: templates/connected_base.html:12
-#, fuzzy
 msgid "Settings"
-msgstr "Réglages de @{}"
+msgstr "Réglages"
 
 #: templates/connected_base.html:13
 msgid "Logout"
@@ -111,3 +110,4 @@ msgstr "Vous ne pouvez pas annuler cette action."
 #: templates/settings.html:42
 msgid "Reset my account"
 msgstr "Réinitialiser mon compte"
+
