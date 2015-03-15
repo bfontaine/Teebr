@@ -1,0 +1,9 @@
+{% extends "connected_base.html" %}
+{% block body_class %}recommendations{% endblock %}
+{% block body_attrs %}ng-controller="tbRecommendationsCtrl"{% endblock %}
+{% block body %}
+{{ super() }}
+
+<p>{{ _("Soon…") }}</p>
+
+{% endblock %}

@@ -49,6 +49,9 @@ js = Bundle(
     # Our JS
     'js/utils.js',
     'js/app.js',
+    'js/app_home.js',
+    'js/app_settings.js',
+    'js/app_recommendations.js',
     filters=js_filters,
     output='js/teebr.js')
 assets.register('js_all', js)
@@ -151,6 +154,14 @@ def user_settings():
 
     user_header(gettext(u"@{}’s Settings"))
     return render_template('settings.html', languages=lst)
+
+
+@app.route('/recommendations')
+def user_recommendations():
+    if not g.user:
+        return redirect(url_for("index"))
+
+    return render_template('recommendations.html')
 
 # AJAX routes
 
