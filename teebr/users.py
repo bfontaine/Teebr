@@ -31,7 +31,7 @@ def get_unrated_statuses(user, count=20):
 
     # This could be optimized, we're using quick & dirty code for now
 
-    ratings = user.ratings
+    ratings = list(user.ratings)
     raw_statuses = Status.select().order_by(fn.Random()).limit(count*2)
 
     statuses = []
