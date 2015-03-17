@@ -7,31 +7,37 @@
 Le projet est réalisé intégralement en Python, et est divisé en trois grandes
 parties.
 
-\begin{itemize}
-  \item Récupération des données en utilisant l’\api{} Streaming de \twt{} avec
-    la bibliothèque \verb|tweepy| et \verb|pybayesantispam| pour filtrer les
-    tweets.
-  \item Traitement et stockage des données, à l’aide des bibliothèques
-    \verb|unidecode|, \verb|nltk| et \verb|textblob| pour le traitement et une
-    base de données SQLite pour le stockage. Le code utilise la bibliothèque
-    \verb|peewee| qui sert d’ORM pour la base. Cette abstraction permet de ne
-    pas dépendre du format de la base de données, il serait possible d’utiliser
-    une base PostgreSQL sans changer le code. L’utilisation d’SQLite permet de
-    pouvoir tester rapidemment sans devoir lancer de serveur de base de
-    données, ainsi que de profiter d’un schéma strict, que ne peuvent pas
-    offrir des bases NoSQL comme MongoDB ou ElasticSearch. L’utilisation d’une
-    base plutôt qu’un ensemble de fichiers JSON permet de faire des recherches
-    beaucoup plus performantes.
-  \item Interface Web, à l’aide des bibliothèques \verb|Flask| et
-    \verb|Gunicorn| pour la gestion des requêtes et de \verb|Babel| pour la
-    localisation (l10n). L’Interface utilise également \verb|LESS| pour
-    pré-processer le CSS, et le framework \verb|Bootstrap| pour la mise en
-    forme. Le site Web tourne dans un conteneur \I{Docker}, et est déployé avec
-    \verb|dokku|.
-\end{itemize}
+La première est la récupération des données en utilisant l’\api{} Streaming de
+\twt{} avec la bibliothèque \verb|tweepy| et \verb|pybayesantispam| pour
+filtrer les tweets.
+
+
+La deuxième est le traitement et stockage des données, à l’aide des
+bibliothèques \verb|unidecode|, \verb|nltk| et \verb|textblob| pour le
+traitement et une base de données SQLite pour le stockage. Le code utilise la
+bibliothèque \verb|peewee| qui sert d’ORM\footnote{Object-Relational Mapping}
+pour la base. Cette abstraction permet de ne pas dépendre du format de la base
+de données. Il serait possible d’utiliser une base PostgreSQL sans changer le
+code. L’utilisation d’SQLite permet de pouvoir tester rapidemment sans devoir
+lancer de serveur de base de données ainsi que de profiter d’un schéma strict,
+que ne peuvent pas offrir des bases NoSQL comme MongoDB ou ElasticSearch.
+L’utilisation d’une base plutôt qu’un ensemble de fichiers JSON permet de faire
+des recherches beaucoup plus performantes.
+
+Enfin, la troisième est l’interface Web, à l’aide des bibliothèques
+\verb|Flask| et \verb|Gunicorn| pour la gestion des requêtes et de \verb|Babel|
+pour la localisation\footnote{Par égard pour nos amis anglophobes l’application
+est disponible intégralement en anglais et en français.}. L’interface utilise
+également \verb|LESS| pour pré-processer le CSS, et le framework
+\verb|Bootstrap| pour la mise en forme. Le site Web tourne dans un conteneur
+\I{Docker}, et est déployé avec \verb|dokku|.
 
 L’ensemble du code, y compris les commentaires, est écrit en anglais, et le
 projet est versionné avec Git.
+
+De façon générale, toutes les bibliothèques externes dont dépend le code Python
+sont listées dans le fichier \verb|requirements.txt|, à la racine du
+répertoire.
 
 \subsection{Données}
 
@@ -39,32 +45,55 @@ Les données sont des \tweets{} qui proviennent directement de \twt{}, via son
 \api{}. Elles ne sont pas fixées, et le projet est conçu pour fonctionner avec
 n’importe quel ensemble de \tweets{}, qui sont importés à l’aide d’un script.
 
+\subsubsection{Récupération}
+
+La récupération des données se fait en deux temps. Le premier, qui était
+originellement le seul, est la \I{découverte}. On utilise ici l’\api{}
+\I{Streaming} de \twt{}, qui permet de se brancher sur un flux temps-réel qui
+nous permet de récupérer un échantillon de tout ce qui est produit sur la
+plateforme. Il est possible de filtrer les \tweets{} par mot-clefs et comptes
+producteurs.
+
+On utilise ici une liste d’environ 170 termes renseignés à la main pour couvrir
+le thème des nouvelles technologies. Elle comprend notamment la liste des
+langages de programmation les plus utilisés sur
+GitHub\footnote{\url{http://githut.info/}} ainsi qu’une liste d’entreprises
+comme Google, Amazon et Apple. Afin de ne pas manquer de \tweets{} avec une
+liste fermée comme celle-ci, on ajoute une liste d’environ 140 comptes à
+suivre, compilée depuis plusieurs sources sur le Web.
+
+Les auteurs des \tweets{} sont également importés dans la base de données,
+puisque c’est eux que l’on souhaite recommander. Toutes les informations
+renvoyées par l’\api{} sont stockées, notamment les compteurs de \tweets{},
+abonnés, favoris ainsi que les informations du profil telles que la biographie,
+l’avatar ou le site Web.
+
+Cette récupération en temps réel permet plus de \I{découvrir} des producteurs
+potentiels que de réellement récolter du contenu. Celui-ci est très lié à
+l’actualité en cours, et l’aspect court-terme de la récupération nous donne
+beaucoup de producteurs, mais avec très peu de contenu par producteur car peu
+d’entre eux auront le temps de tweeter deux fois pendant la fenêtre de
+récupération\footnote{Pour donner un ordre d’idée, le flux nous permet
+d’importer un peu plus de 1000 comptes par minute dans la base de données}.
+
+Il est donc nécessaire de faire une récupération plus approfondie. On utilise
+ici toujours l’\api{} de \twt{}, mais cette fois-ci on parcourt tous les
+producteurs enregistrés dans la base grâce à la précédente passe et on récupère
+leurs derniers \tweets{}\footnote{Au maximum 200 par compte actuellement}. Il
+faut un nombre conséquent de \tweets{} pour générer la signature d’un
+producteur et cette passe nous permet de le faire. Elle corrige également les
+défauts de la précédente notamment la sensibilité à l’actualité du moment.
+
 \subsubsection{Sélection}
 
-Le flux de \tweets{} récupéré depuis l’\api{} \twt{} doit être filtré pour être
-intéressant. On se connecte à l’\api{} en envoyant une liste de mots-clefs
-(\verb|keywords.txt|) à suivre, et celle-ci nous envoit un échantillon des
-tweets qui mentionnent ceux-ci en temps réel. La liste de mots-clefs compte
-environ 170 termes renseignés à la main pour couvrir le thème des nouvelles
-technologies. Elle comprend notamment la liste des langages de programmation
-les plus utilisés sur GitHub\footnote{\url{http://githut.info/}} ainsi qu’une
-liste d’entreprises comme Google, Amazon et Apple. Afin de ne pas rater de
-\tweets{} avec une liste fermée comme celle-ci, on ajoute une liste d’environ
-140 comptes à suivre, compilée depuis
-  \href{http://uk.businessinsider.com/100-best-tech-people-on-twitter-2014-2014-11?op=1?r=US}{un
-    article de Business Insider}.
+Bien que l’on puisse techniquement utiliser tout \tweet{}, il est nécessaire
+ici d’effectuer une pré-sélection des \tweets{} pour réduire le travail de
+classification.
 
-Chaque \tweet{} passe ensuite une série de filtres\footnote{Voir
-\verb|teebr.features.filter_status|} pour éliminer les tweets en langue autre
-que l’anglais, les réponses et \rts{} ainsi que les spams. Ce dernier filtre se
-base sur un filtre Bayésien simple, entraîné à la main sur environ 300
+On se limite ainsi aux \tweets{} écrits en anglais. On supprime les réponses
+et les \rts{}\footnote{Voir \verb|teebr.features.filter_status|} ainsi que les
+spams à l’aide d’un filtre Bayésien simple, entraîné à la main sur environ 300
 \tweets{}\footnote{Voir \verb|scripts/train_spam.py|}.
-
-Enfin, les auteurs des \tweets{} sont également importés dans la base de
-données, puisque c’est eux que l’on souhaite recommander. Toutes les
-informations renvoyées par l’\api{} sont stockées, notamment les compteurs de
-\tweets{}, abonnés, favoris ainsi que les informations du profil tel que la
-biographie, l’avatar ou le site Web.
 
 \subsection{Traitement}
 
