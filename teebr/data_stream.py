@@ -29,10 +29,6 @@ class TwitterRawPipeListener(tweepy.StreamListener):
 
 class TwitterPipeListener(tweepy.StreamListener):
 
-    def __init__(self, *args, **kw):
-        super(TwitterPipeListener, self).__init__(*args, **kw)
-        init_pipeline()
-
     def on_status(self, status):
         if filter_status(status):
             import_status(status)
@@ -104,5 +100,6 @@ class TwitterPipe(object):
 
 
 def collect(raw=False, **kw):
+    init_pipeline()
     t = TwitterPipe(raw=raw)
     t.run(**kw)

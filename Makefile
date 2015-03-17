@@ -70,8 +70,11 @@ babel-compile:
 run:
 	$(BIN)gunicorn app:app
 
+seed-db:
+	$(BIN)python collect_stream.py
+
 collect:
-	$(BIN)python collect.py
+	$(BIN)python collect_timelines.py
 
 # Deploy
 # ------------------------

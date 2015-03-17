@@ -26,7 +26,7 @@ def import_status(st, author=None):
 
     with db.transaction():
         if not author:
-            # get or create
+            # get or create on the author
             save_author = False
             try:
                 author = dict2model(author_dict, Producer, True)
@@ -38,9 +38,13 @@ def import_status(st, author=None):
             if save_author:
                 author.save()
 
-        status = dict2model(st_dict, Status)
-        set_producer(author, status, st_dict)
+        # get or create on the status
+        try:
+            status = Status.get(Status.id_str == st_dict["id_str"])
+        except Status.DoesNotExist:
+            status = dict2model(st_dict, Status)
 
+        set_producer(author, status, st_dict)
         status.save()
 
     #logger.debug("Imported status '%s' as '%s'" % (status.id_str, status.id))

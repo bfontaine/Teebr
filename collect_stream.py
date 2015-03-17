@@ -12,13 +12,14 @@ def read_words(path):
     return words
 
 
-kw = read_words("keywords.txt")
-accounts = read_words("accounts.txt")
+if __name__ == '__main__':
+    kw = read_words("keywords.txt")
+    accounts = read_words("accounts.txt")
 
-raw = False
+    raw = False
 
-if len(argv) > 1 and argv[1] == "raw=true":
-    print "Collecting raw tweets..."
-    raw = True
+    if len(argv) > 1 and argv[1] == "raw=true":
+        print "Collecting raw tweets..."
+        raw = True
 
-collect(raw=raw, keywords=kw, follow_ids=accounts)
+    collect(raw=raw, keywords=kw, follow_ids=accounts)
