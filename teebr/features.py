@@ -8,7 +8,10 @@ from collections import defaultdict
 
 import bayes
 
+from .log import mkLogger
 from .text.utils import contains_emoji, extract_named_entities
+
+logger = mkLogger("features")
 
 LANGUAGES = ('en',) # 'fr')
 
@@ -170,8 +173,12 @@ def filter_status(st):
         return False
 
     # remove other spam tweets
-    if spamFilter(st.text):
-        return False
+    try:
+        if spamFilter(st.text):
+            return False
+    except TypeError as e:
+        # got this once, don't know why
+        logger.warn(e)
 
     # remove RTs
     if hasattr(st, 'retweeted_status') and st.retweeted_status:

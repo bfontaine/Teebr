@@ -1,5 +1,5 @@
-app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
-    function tbHomeCtrl($scope, $timeout, $http) {
+app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http', 'tbDOM',
+    function tbHomeCtrl($scope, $timeout, $http, DOM) {
 
   _scope = $scope; // debug
 
@@ -63,27 +63,31 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http',
 
   /*- Rating ----------------------------------------------------------------*/
 
-  $scope.rateStatus = function rateStatus(result) {
+  $scope.rateStatus = function rateStatus(result, ev) {
     post("rate", {
       id: $scope.status.id,
       score: result,
     }).success(function() {
       $scope.nextStatus();
     });
+
+    return DOM.stopEvent(ev);
   };
 
-  $scope.skipStatus = function skipStatus() {
+  $scope.skipStatus = function skipStatus(ev) {
     $scope.nextStatus();
+    return DOM.stopEvent(ev);
   };
 
-  $scope.reportAsSpam = function reportAsSpam() {
+  $scope.reportAsSpam = function reportAsSpam(ev) {
     post("report", { id: $scope.status.id });
     $scope.nextStatus();
+    return DOM.stopEvent(ev);
   };
 
   // shortcuts
-  $scope.rateStatusYes = function y() { return $scope.rateStatus(1); };
-  $scope.rateStatusNo = function n() { return $scope.rateStatus(0); };
+  $scope.rateStatusYes = function y(e) { return $scope.rateStatus(1, e); };
+  $scope.rateStatusNo = function n(e) { return $scope.rateStatus(0, e); };
 
   init();
 }]);

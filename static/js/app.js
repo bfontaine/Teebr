@@ -9,7 +9,7 @@ app.config(function($interpolateProvider) {
 
 /*== Filters ================================================================*/
 
-app.filter("tweet_html", ["$sce", function($sce) {
+app.filter("tweet_html_text", ["$sce", function($sce) {
 
   var re_hashtag = /(^|\s)#([a-z][^.\s]*)/gi,
       // see:
@@ -18,9 +18,9 @@ app.filter("tweet_html", ["$sce", function($sce) {
 
       re_mention = /(^|\s)@([a-z]\w*)/gi,
 
-      re_url = /(^|\s)(https?:\/\/)([a-z]+\.[a-z]{2,}\S+)/g;
+      re_url = /(^|\s)(https?:\/\/)([a-z0-9]+\.[a-z0-9]{2,}\S+)/g;
 
-  function highlightTwitterFeatures(text) {
+  function highlightTwitterFeatures(text, entities) {
     return text.replace(re_hashtag, function(_, before, tag) {
 
       return before + '<span class="status-hashtag">' +
@@ -41,7 +41,23 @@ app.filter("tweet_html", ["$sce", function($sce) {
           '<span class="status-mention-content">' + mention + '</span></span>';
 
     }).replace(re_url, function(_, before, protocol, url) {
-      var full = protocol + url;
+      var full = protocol + url,
+          max_length = 30,
+
+          photos = entities.photos || [];
+
+      for (var i=0, l=photos.length; i<l; i++) {
+        if (photos[i].url == full) {
+
+          // if this is a picture URL, remove it entirely because we'll show
+          // the photo below the text
+          return before;
+        }
+      }
+
+      if (url.length > max_length) {
+        url = url.slice(0, max_length-1) + "…";
+      }
 
       return before + '<a rel="nofollow" target="_blank" ' +
         'class="status-link" href="' + full + '">' +
@@ -51,12 +67,18 @@ app.filter("tweet_html", ["$sce", function($sce) {
     });
   }
 
-  return function(text) {
+  return function(s) {
+    var text;
+
+    if (!s) { return s; }
+
+    text = s.text;
+
     if (!text) { return text; }
 
     //text = text.replace(/</, '&lt;').replace(/>/, '&gt;');
 
-    text = highlightTwitterFeatures(text);
+    text = highlightTwitterFeatures(text, s.extra_entities || {});
 
     return $sce.trustAsHtml(text);
   };
