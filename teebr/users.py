@@ -5,7 +5,7 @@ from __future__ import absolute_import, unicode_literals
 from peewee import fn
 
 from .log import mkLogger
-from .models import Status, Consumer, db
+from .models import Status, Consumer, Producer, db
 from .web import get_languages
 
 logger = mkLogger("users")
@@ -49,8 +49,23 @@ def get_unrated_statuses(user, count=20):
 
 
 def mark_status_as_spam(status_id):
-    # TODO
-    pass
+    # avoid an N+1 query for the producer
+    st = Status.select(Status, Producer).join(Producer).get(Status.id == status_id)
+
+    st.spam_reported_times += 1
+    st.author.spam_reported_times += 1
+
+    if st.author.spam_reported_times >= 5:
+        st.author.delete_instance(recursive=True)
+        return
+
+    st.author.save()
+
+    if st.spam_reported_times >= 3:
+        st.delete_instance(recursive=True)
+        return
+
+    st.save()
 
 
 def set_user_settings(consumer, settings):

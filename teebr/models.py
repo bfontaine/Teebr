@@ -78,7 +78,7 @@ class User(ContentSignature):
 
 
 class Producer(User):
-    id_str = CharField(max_length=32, verbose_name=u"Twitter ID")
+    id_str = CharField(max_length=32, verbose_name=u"Twitter ID", unique=True)
 
     protected = BooleanField(default=False)
     verified = BooleanField(default=False)
@@ -133,6 +133,8 @@ class Producer(User):
     last_status_id = IntegerField(default=0)
     first_status_id = IntegerField(default=0)
 
+    spam_reported_times = IntegerField(default=0)
+
 
 class Consumer(User):
     screen_name = CharField(index=True, unique=True)
@@ -150,7 +152,7 @@ class Consumer(User):
 
 
 class Status(ContentSignature):
-    id_str = CharField(max_length=32, verbose_name=u"Twitter ID")
+    id_str = CharField(max_length=32, verbose_name=u"Twitter ID", unique=True)
 
     text = CharField()
 
@@ -178,6 +180,8 @@ class Status(ContentSignature):
 
     # experimental
     names = CharField()
+
+    spam_reported_times = IntegerField(default=0)
 
 
 class Rating(BaseModel):
