@@ -226,6 +226,12 @@ class FeaturesDict(defaultdict):
 
 
 def compute_features(status):
+    expand_urls(status)
     f = FeaturesDict(status)
     f.compute_features()
     return f
+
+
+def expand_urls(st):
+    for link in getattr(st, "entities", {}).get("urls", []):
+        st.text = st.text.replace(link["url"], link["expanded_url"])

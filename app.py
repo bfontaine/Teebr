@@ -129,6 +129,8 @@ def twitter_login():
 def twitter_logout():
     session.clear()
     resp = redirect(url_for("index"))
+    # It seems that Google Chrome won't delete the cookie until we close the
+    # browser :/
     resp.set_cookie("session", "", expires=0)
     return resp
 

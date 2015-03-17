@@ -63,6 +63,7 @@ class TimelinesFetcher(object):
                 self.on_status(producer, st)
 
             producer.last_status_id = timeline[-1].id
+            producer.save()
 
     def on_status(self, producer, status):
         if filter_status(status):
