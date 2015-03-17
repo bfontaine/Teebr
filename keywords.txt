@@ -86,7 +86,6 @@ telnet
 ajax
 angularjs
 backbonejs
-bootstrap
 d3js
 DNS
 dojojs
