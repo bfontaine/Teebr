@@ -49,10 +49,11 @@ def get_unrated_statuses(user, count=20):
 
 
 def mark_status_as_spam(status_id):
-    # avoid an N+1 query for the producer
-    st = Status.select(Status, Producer).join(Producer).get(Status.id == status_id)
+    st = Status.get(Status.id == status_id)
 
     st.spam_reported_times += 1
+
+    # PERF N+1 query here
     st.author.spam_reported_times += 1
 
     if st.author.spam_reported_times >= 5:
