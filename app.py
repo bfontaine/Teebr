@@ -12,6 +12,7 @@ from teebr.admin import setup_admin
 from teebr.log import mkLogger
 from teebr.models import status_to_dict
 from teebr.pipeline import rate_status
+from teebr.data_imports import import_credentials
 from teebr.users import get_consumer_profile, get_unrated_statuses
 from teebr.users import set_user_settings, mark_status_as_spam
 from teebr.users import reset_user_ratings
@@ -133,7 +134,12 @@ def twitter_logout():
 @app.route('/_oauth/twitter')
 @twitter.authorized_handler
 def oauth_authorized(resp):
-    return authorize_oauth(resp)
+    resp = authorize_oauth(resp)
+
+    import_credentials(get_consumer_profile(session.get('twitter_user')),
+            session.get('twitter_token'))
+
+    return resp
 
 @app.route('/home')
 def home():

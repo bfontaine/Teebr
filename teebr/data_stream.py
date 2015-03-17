@@ -9,6 +9,7 @@ import tweepy
 from .config import config
 from .features import filter_status, LANGUAGES
 from .log import mkLogger
+from .models import TwitterCredentials
 from .pipeline import import_status, init_pipeline
 
 logger = mkLogger("data")
@@ -47,8 +48,7 @@ class TwitterPipe(object):
 
     def __init__(self, raw=False):
         self.raw = raw
-        self.init_from_env()
-
+        self.init_from_db()
 
     def init_from_env(self, prefix="TWITTER_"):
         """
@@ -64,6 +64,13 @@ class TwitterPipe(object):
         auth = tweepy.auth.OAuthHandler(kw["consumer_key"],
                 kw["consumer_secret"])
         auth.set_access_token(kw["access_token_key"], kw["access_token_secret"])
+        self.init_stream(auth)
+
+    def init_from_db(self):
+        """
+        Init the pipe from credentials found in the DB
+        """
+        auth = TwitterCredentials.get().to_tweepy_oauth_handler()
         self.init_stream(auth)
 
     def init_stream(self, auth):

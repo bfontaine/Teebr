@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from sys import argv
-from teebr.data import collect
+from teebr.data_stream import collect
 
 def read_words(path):
     with open(path) as f:

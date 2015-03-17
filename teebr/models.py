@@ -6,6 +6,7 @@ from os import environ
 from peewee import SqliteDatabase, Model
 from peewee import FloatField, ForeignKeyField, BooleanField, CharField
 from peewee import DateTimeField, IntegerField, PrimaryKeyField
+import tweepy
 
 db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "/tmp/teebr.db"))
 
@@ -128,6 +129,10 @@ class Producer(User):
     # Cache
     imported_statuses = IntegerField(default=0)
 
+    # These are used for tweets imports
+    last_status_id = IntegerField(default=0)
+    first_status_id = IntegerField(default=0)
+
 
 class Consumer(User):
     screen_name = CharField(index=True, unique=True)
@@ -183,8 +188,30 @@ class Rating(BaseModel):
     consumer = ForeignKeyField(Consumer, related_name='ratings')
 
 
+class TwitterCredentials(BaseModel):
+    user = ForeignKeyField(Consumer, related_name='twitter_credentials')
+
+    # for the app
+    consumer_key = CharField()
+    consumer_secret = CharField()
+    # for the twitter user
+    access_token_key = CharField()
+    access_token_secret = CharField()
+
+    def to_tweepy_oauth_handler(self):
+        auth = tweepy.auth.OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth.set_access_token(self.access_token_key, self.access_token_secret)
+        return auth
+
+    class Meta:
+        indexes = (
+            (('access_token_key', 'access_token_secret'), True),
+        )
+
+
 def create_tables():
-    db.create_tables([ Producer, Consumer, Status, Rating ], safe=True)
+    db.create_tables([
+        Producer, Consumer, Status, Rating, TwitterCredentials], safe=True)
 
 
 def dict2model(kv, model, create=False):
