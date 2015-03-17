@@ -18,6 +18,7 @@ feat_factors = {
     'sg_user_mentions': 2.0,
     'sg_trends': 2.0,
     'sg_symbols': 3.0,
+    'sg_media': 3.0,
 
     'sg_geolocalized': 1.2,
 

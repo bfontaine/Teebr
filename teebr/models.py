@@ -3,6 +3,8 @@
 from __future__ import absolute_import, unicode_literals
 
 from os import environ
+from json import loads
+
 from peewee import SqliteDatabase, Model
 from peewee import FloatField, ForeignKeyField, BooleanField, CharField
 from peewee import DateTimeField, IntegerField, PrimaryKeyField
@@ -57,6 +59,7 @@ class ContentSignature(BaseModel):
     sg_user_mentions = IndicatorField(u"Mentions")
     sg_trends = IndicatorField(u"Trends")
     sg_symbols = IndicatorField(u"Symbols")
+    sg_media = IndicatorField(u"Media")
 
     # L10N
     sg_geolocalized = IndicatorField(u"Geolocalized")
@@ -174,7 +177,9 @@ class Status(ContentSignature):
     favorite_count = CountField()
     retweet_count = CountField()
 
-    entities_json = CharField(default="{}")
+    # Some more data we can use on the UI part. This is not used for the
+    # classification.
+    extra_entities = CharField(default="{}")
 
     author = ForeignKeyField(Producer, related_name='statuses')
 
@@ -238,4 +243,8 @@ def status_to_dict(st):
     return {
         "id": st.id,
         "text": st.text,
+        # we want this to know if we need to hide extra entities that might be,
+        # well, NSFW.
+        "nsfw": st.sg_nsfw == 1,
+        "extra_entities": loads(st.extra_entities),
     }

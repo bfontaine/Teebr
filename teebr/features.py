@@ -3,6 +3,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import re
+from json import dumps
 from collections import defaultdict
 
 import bayes
@@ -136,6 +137,8 @@ APPS_BLACKLIST = set([
 # some apps add numbers at the end, e.g. MySpam, MySpam1, MySpam2, etc
 END_DIGITS = re.compile(r"\s*\d+$")
 
+entity_keys = ("urls", "hashtags", "user_mentions", "trends", "symbols", "media")
+
 storage = bayes.Storage("bayes.dat", 10)
 storage.load()
 spamFilter = bayes.Bayes(storage).is_spam
@@ -188,17 +191,23 @@ class FeaturesDict(defaultdict):
         Compute all features for this tweet
         """
         self._set_source_type()
+        self._set_extra_entities()
 
-        self["sg_geolocalized"] = self._st.geo is not None
-        self["sg_lang_%s" % self._st.lang] = 1
-        self["sg_contributors"] = self._st.contributors is not None
-        self["sg_emojis"] = contains_emoji(self._st.text)
+        st = self._st
+
+        self["sg_geolocalized"] = st.geo is not None
+        self["sg_lang_%s" % st.lang] = 1
+        self["sg_contributors"] = st.contributors is not None
+        self["sg_emojis"] = contains_emoji(st.text)
         # some statuses don't have this attribute
-        self["sg_nsfw"] = getattr(self._st, "possibly_sensitive", False)
+        self["sg_nsfw"] = getattr(st, "possibly_sensitive", False)
 
-        self["names"] = ",".join(extract_named_entities(self._st.text))
+        self["names"] = ",".join(extract_named_entities(st.text))
 
-        for key in ("urls", "hashtags", "user_mentions", "trends", "symbols"):
+        self["retweet_count"] = getattr(st, "retweet_count", 0)
+        self["favorite_count"] = getattr(st, "favorite_count", 0)
+
+        for key in entity_keys:
             self["sg_%s" % key] = int(bool(self._st.entities["urls"]))
 
 
@@ -225,6 +234,30 @@ class FeaturesDict(defaultdict):
         self["sg_source_others"] = 1
 
 
+    def _set_extra_entities(self):
+        extra = {}
+
+        media = getattr(self._st, "entities", {}).get("media", [])
+
+        if media:
+            photos = []
+
+            for m in media:
+                # TODO check the format for videos
+                if m.get("type") != "photo":
+                    continue
+                photos.append({
+                    # The image URL
+                    "media_url": m["media_url_https"],
+                    # The URL included in the status (expanded by us)
+                    "url": m["expanded_url"],
+                })
+
+            extra["photos"] = photos
+
+        self["extra_entities"] = dumps(extra)
+
+
 def compute_features(status):
     expand_urls(status)
     f = FeaturesDict(status)
@@ -233,5 +266,6 @@ def compute_features(status):
 
 
 def expand_urls(st):
-    for link in getattr(st, "entities", {}).get("urls", []):
+    entities = getattr(st, "entities", {})
+    for link in entities.get("urls", []) + entities.get("media", []):
         st.text = st.text.replace(link["url"], link["expanded_url"])

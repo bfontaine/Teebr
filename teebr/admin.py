@@ -26,7 +26,6 @@ class ConsumerAdmin(ModelAdminView):
     pass
 
 class StatusAdmin(ModelAdminView):
-    column_exclude_list = ("entities_json", )
     pass
 
 def setup_admin(app):
