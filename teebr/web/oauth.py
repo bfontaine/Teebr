@@ -5,6 +5,9 @@ from flask.ext.babel import gettext
 from flask_oauth import OAuth
 
 from ..config import config
+from ..log import mkLogger
+
+logger = mkLogger("web.oauth")
 
 oauth = OAuth()
 
@@ -34,6 +37,7 @@ def authorize_oauth(resp):
     next_url = request.args.get('next') or url_for('index')
     if resp is None:
         flash(gettext(u'You denied the request to sign in.'))
+        logger.warn("user denied the request to sign in")
         return redirect(next_url)
 
     session['twitter_token'] = (

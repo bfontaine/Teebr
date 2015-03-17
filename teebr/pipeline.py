@@ -15,7 +15,7 @@ def init_pipeline():
     create_tables()
 
 
-def import_status(st):
+def import_status(st, author=None):
     """
     Import a status in the DB
     """
@@ -24,18 +24,19 @@ def import_status(st):
 
     st_dict.update(compute_features(st))
 
-    # get or create
-    save_author = False
     with db.transaction():
-        try:
-            author = dict2model(author_dict, Producer, True)
-            save_author = True
-        except IntegrityError as e:
-            logger.debug(e)
-            author = Producer.get(Producer.screen_name == author_dict["screen_name"])
+        if not author:
+            # get or create
+            save_author = False
+            try:
+                author = dict2model(author_dict, Producer, True)
+                save_author = True
+            except IntegrityError as e:
+                logger.debug(e)
+                author = Producer.get(Producer.screen_name == author_dict["screen_name"])
 
-        if save_author:
-            author.save()
+            if save_author:
+                author.save()
 
         status = dict2model(st_dict, Status)
         set_producer(author, status, st_dict)

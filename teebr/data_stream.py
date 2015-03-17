@@ -6,10 +6,10 @@ from json import dumps
 
 import tweepy
 
+from .auth import get_tweepy_oauth_handler
 from .config import config
 from .features import filter_status, LANGUAGES
 from .log import mkLogger
-from .models import TwitterCredentials
 from .pipeline import import_status, init_pipeline
 
 logger = mkLogger("data")
@@ -34,9 +34,8 @@ class TwitterPipeListener(tweepy.StreamListener):
         init_pipeline()
 
     def on_status(self, status):
-        if not filter_status(status):
-            return
-        import_status(status)
+        if filter_status(status):
+            import_status(status)
 
     def on_error(self, status_code):
         print "Error %s" % status_code
@@ -70,7 +69,7 @@ class TwitterPipe(object):
         """
         Init the pipe from credentials found in the DB
         """
-        auth = TwitterCredentials.get().to_tweepy_oauth_handler()
+        auth = get_tweepy_oauth_handler()
         self.init_stream(auth)
 
     def init_stream(self, auth):

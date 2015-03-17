@@ -88,7 +88,7 @@ def set_header():
 
 @app.before_request
 def set_g_locale():
-    if '/static/' not in request.path:
+    if '/static/' not in request.path and '/_ajax/' not in request.path:
         logger.debug("setting user locale...")
         setattr(g, 'locale', babel.locale_selector_func())
 

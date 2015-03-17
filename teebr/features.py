@@ -193,7 +193,8 @@ class FeaturesDict(defaultdict):
         self["sg_lang_%s" % self._st.lang] = 1
         self["sg_contributors"] = self._st.contributors is not None
         self["sg_emojis"] = contains_emoji(self._st.text)
-        self["sg_nsfw"] = self._st.possibly_sensitive
+        # some statuses don't have this attribute
+        self["sg_nsfw"] = getattr(self._st, "possibly_sensitive", False)
 
         self["names"] = ",".join(extract_named_entities(self._st.text))
 
