@@ -128,7 +128,9 @@ def twitter_login():
 @app.route('/_logout/twitter')
 def twitter_logout():
     session.clear()
-    return redirect(url_for("index"))
+    resp = redirect(url_for("index"))
+    resp.set_cookie("session", "", expires=0)
+    return resp
 
 
 @app.route('/_oauth/twitter')

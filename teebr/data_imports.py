@@ -22,15 +22,13 @@ def import_credentials(consumer, creds):
 
     token, secret = creds
 
-    tc = TwitterCredentials.create(
-        user=consumer,
-        consumer_key=twitter.consumer_key,
-        consumer_secret=twitter.consumer_secret,
-        access_token_key=token,
-        access_token_secret=secret)
-
     try:
-        tc.save()
+        TwitterCredentials.create(
+            user=consumer,
+            consumer_key=twitter.consumer_key,
+            consumer_secret=twitter.consumer_secret,
+            access_token_key=token,
+            access_token_secret=secret)
     except IntegrityError as e:
         logger.warn(e)
 
