@@ -87,6 +87,7 @@ URL_TYPES = {
     ],
 }
 
+# TODO we might be able to remove this now that we have a spam filter
 APPS_BLACKLIST = set([
     # followers spam
     u"Unfollowers",
