@@ -161,6 +161,10 @@ def filter_status(st):
     if st.in_reply_to_screen_name:
         return False
 
+    # remove RTs
+    if getattr(st, 'retweeted_status', False):
+        return False
+
     # remove suspicious apps
     if not st.source or not st.source_url:
         return False
@@ -173,6 +177,10 @@ def filter_status(st):
     if st.text.startswith("RT @") or st.text.startswith("MT @"):
         return False
 
+    # remove manual responses
+    if st.text.startswith(".@"):
+        return False
+
     # remove other spam tweets
     try:
         if spamFilter(st.text):
@@ -180,10 +188,6 @@ def filter_status(st):
     except TypeError as e:
         # got this once, don't know why
         logger.warn(e)
-
-    # remove RTs
-    if hasattr(st, 'retweeted_status') and st.retweeted_status:
-        return False
 
     # ok
     return True
