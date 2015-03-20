@@ -40,7 +40,6 @@ js = Bundle(
     # Bootstrap/Bootflat
     'js/vendor/jquery.js',
     'js/vendor/html5shiv.js',
-    # 'js/vendor/icheck.min.js',
     'js/vendor/bootstrap.min.js',
     'js/vendor/angular.js',
     'js/vendor/angular-animate.js',
@@ -60,8 +59,8 @@ assets.register('js_all', js)
 # - CSS
 css = Bundle(
     # Bootstrap/Bootflat
-    'css/bootstrap.min.css',
-    'css/bootflat.min.css',
+    'css/vendor/bootstrap.min.css',
+    'css/vendor/bootflat.min.css',
     # Our JS
     'css/app.css',
     filters=css_filters,
@@ -171,6 +170,7 @@ def user_recommendations():
     if not g.user:
         return redirect(url_for("index"))
 
+    # TODO
     return render_template('recommendations.html')
 
 # AJAX routes
