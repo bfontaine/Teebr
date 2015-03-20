@@ -10,7 +10,7 @@ from peewee import FloatField, ForeignKeyField, BooleanField, CharField
 from peewee import DateTimeField, IntegerField, PrimaryKeyField
 import tweepy
 
-db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "/tmp/teebr.db"))
+db = SqliteDatabase(environ.get("TEEBR_SQLITE_DB_PATH", "db/teebr.db"))
 
 class IndicatorField(FloatField):
     def __init__(self, name, **kwargs):
@@ -146,6 +146,10 @@ class Consumer(User):
 
     # Cache
     rated_statuses = IntegerField(default=0)
+
+    # Rights
+    beta_features = BooleanField(default=False)
+    is_admin = BooleanField(default=False)
 
     def to_jsonable_dict(self):
         return {
