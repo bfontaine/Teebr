@@ -34,3 +34,4 @@ Werkzeug==0.9.6
 git+https://github.com/coleifer/wtf-peewee.git
 git+https://github.com/dchest/pybayesantispam.git
 WTForms==2.0.2
+peewee_migrate

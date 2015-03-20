@@ -2,6 +2,7 @@
 
 VENV = ./venv
 SRC  = teebr
+PWD  = $(shell pwd)
 
 .PHONY: clean compile-assets deploy deps run collect
 
@@ -23,8 +24,8 @@ REQS  = requirements.txt
 deps: $(VENV) requirements.txt
 	$(PIP) install -r $(REQS)
 
-freeze: $(VENV)
-	$(PIP) freeze >| $(REQS)
+#freeze: $(VENV)
+#	$(PIP) freeze >| $(REQS)
 
 $(VENV):
 	virtualenv $@
@@ -48,6 +49,28 @@ compile-assets: $(CSS_TARGET)
 
 $(CSS_TARGET): $(LESS_SOURCES)
 	$(LESSC) $(LESS_BASE) > $@
+
+# DB
+# ------------------------
+
+# peewee removes the leading slash of the path, hence the three slashes here
+# https://github.com/coleifer/peewee/issues/557
+DB = "sqlite:///$(PWD)/db/teebr.db"
+MIGRATIONS_DIR = db/migrations
+MIGRATE_FLAGS = --directory $(MIGRATIONS_DIR) --database $(DB)
+MIGRATE = $(BIN)pw_migrate
+
+$(MIGRATIONS_DIR):
+	mkdir -p $@
+	touch $@/conf.py
+
+create-migration: $(MIGRATIONS_DIR)
+	[ "x$(MIGRATION_NAME)" != "x" ] && \
+		$(MIGRATE) create $(MIGRATE_FLAGS) "$(MIGRATION_NAME)" || \
+		( echo 'Set $$(MIGRATION_NAME) to run this.'; false )
+
+run-migrations: $(MIGRATIONS_DIR)
+	$(MIGRATE) migrate $(MIGRATE_FLAGS) -v
 
 
 # I18N
