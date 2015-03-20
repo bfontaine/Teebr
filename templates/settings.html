@@ -10,12 +10,24 @@
         <div class="form-horizontal">
 
             <div class="form-group">
-                <label for="lang" class="control-label col-sm-3">{{ _("Language:") }}</label>
-                <div class="col-sm-9">
+                <label for="lang"
+                       class="control-label col-sm-6">{{ _("Language:") }}</label>
+                <div class="col-sm-6">
                     <select id="lang" class="form-control"
                             ng-model="user.language"
                             ng-options="l.code as l.display for l in languages">
                     </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="beta"
+                       class="control-label col-sm-6">{{ _("Enable beta features:") }}</label>
+                <div class="col-sm-3">
+                    <input id="beta" class="form-control"
+                            type="checkbox"
+                            ng-model="user.beta_features" />
+                    {# TODO feedback on save #}
                 </div>
             </div>
 

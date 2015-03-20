@@ -154,7 +154,8 @@ class Consumer(User):
     def to_jsonable_dict(self):
         return {
             "rated_statuses": self.rated_statuses,
-            "language": self.language
+            "language": self.language,
+            "beta_features": self.beta_features,
         }
 
 

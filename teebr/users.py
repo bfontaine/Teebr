@@ -71,8 +71,14 @@ def mark_status_as_spam(status_id):
 
 def set_user_settings(consumer, settings):
     language = settings["language"]
+    beta = settings["beta_features"]
+    consumer.beta_features = bool(beta)
+
     if consumer.language == language or language not in get_languages(True):
+        consumer.save()
         return False
+
+    # we reload only if the language changed
     consumer.language = language
     consumer.save()
     return True
