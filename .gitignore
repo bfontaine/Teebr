@@ -36,6 +36,7 @@ app.css
 # Data
 /datasets
 /*.jsons
+/db
 
 # Logs
 *.log
