@@ -5,7 +5,8 @@ from __future__ import absolute_import, unicode_literals
 from peewee import fn
 
 from .log import mkLogger
-from .models import Status, Consumer, Producer, db
+from .models import Status, Consumer, db
+from .recommendation import similarity_score
 from .web import get_languages
 
 logger = mkLogger("users")
@@ -29,10 +30,15 @@ def get_unrated_statuses(user, count=20):
     Return a random sample of statuses unrated by ``user`` of max ``count``.
     """
 
-    # This could be optimized, we're using quick & dirty code for now
+    # PERF This could be optimized, we're using quick & dirty code for now
 
     ratings = list(user.ratings)
     raw_statuses = Status.select().order_by(fn.Random()).limit(count*2)
+
+    add_expected_score = user.beta_features
+
+    feat_keys = user._meta.fields.keys()
+    feats_user_count = float(user.rated_statuses)
 
     statuses = []
     for st in raw_statuses:
@@ -40,6 +46,11 @@ def get_unrated_statuses(user, count=20):
             if rt.status == st:
                 ratings.remove(rt)
                 continue
+
+        if add_expected_score:
+            score = similarity_score(feat_keys, user, feats_user_count, st, 1)
+            setattr(st, "expected_score", score)
+
         statuses.append(st)
         count -= 1
         if count <= 0:

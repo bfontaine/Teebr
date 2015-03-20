@@ -187,7 +187,9 @@ def unrated_statuses_sample():
     if not g.user:
         abort(404)
 
-    return json(map(status_to_dict, get_unrated_statuses(g.user)))
+    sts = map(status_to_dict, get_unrated_statuses(g.user))
+
+    return json(sts)
 
 
 @ajax("/user/statuses/rate", methods=["POST"])

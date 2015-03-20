@@ -87,3 +87,7 @@ def rate_status(consumer, status_id, score):
 
         update_user_sg_from_status(consumer, status, score)
         consumer.save()
+
+    # TODO validate our model: check similarity_score between the consumer and
+    # the status and see if the score was expected or not (e.g. positive score
+    # and good score = good, everything else is bad)

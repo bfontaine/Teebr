@@ -29,40 +29,53 @@ feat_factors = {
     'sg_nsfw': 2.0,
 }
 
-def similarity_score(consumer, producer):
+def similarity_score(keys, sig1, sig1_count, sig2, sig2_count):
     """
-    Compute a similary score between two signatures. The score is a float
-    between 0 (complete similarity) and 1 (nothing in common).
+    Compute a similarity score between two signatures.
     """
     score = 0.0
     factors = 0.0
 
-    feats_consumer = consumer._meta.fields.items()
-    feats_producer = producer._meta.fields.items()
+    sig1 = sig1.__dict__["_data"]
+    sig2 = sig2.__dict__["_data"]
 
-    count_consumer = float(consumer.rated_statuses)
-    count_producer = float(producer.imported_statuses)
+    sig1_count = float(sig1_count)
+    sig2_count = float(sig2_count)
 
-    for k, vc in feats_consumer:
+    for k in keys:
         if not k.startswith("sg_"):
             continue
 
-        vp = feats_producer[k]
+        v1 = sig1[k]
+        v2 = sig2[k]
 
         # we don't compare on a feature if one signature has a null value
-        if vc == 0 or vp == 0:
+        if v1 == 0 or v2 == 0:
             continue
 
         factor = feat_factors.get(k, 1.0)
 
         # normalize both features
-        vc /= count_consumer
-        vp /= count_producer
+        v1 /= sig1_count
+        v2 /= sig2_count
 
-        score += abs(vp - vc) * factor
+        score += abs(v2 - v1) * factor
         factors += factor
 
     if factors == 0:
         return 1.0
 
     return score / factors
+
+def users_similarity_score(consumer, producer):
+    """
+    Compute a similarity score between a consumer's and a producer's
+    signatures. The score is a float between 0 (complete similarity) and 1
+    (nothing in common).
+    """
+    count_consumer = float(consumer.rated_statuses)
+    count_producer = float(producer.imported_statuses)
+
+    return similarity_score(
+            consumer._meta.fields.keys(),
+            consumer, count_consumer, producer, count_producer)

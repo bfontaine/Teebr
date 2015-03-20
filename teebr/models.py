@@ -245,11 +245,14 @@ def dict2model(kv, model, create=False):
 
 
 def status_to_dict(st):
-    return {
+    d = {
         "id": st.id,
         "text": st.text,
         # we want this to know if we need to hide extra entities that might be,
         # well, NSFW.
         "nsfw": st.sg_nsfw == 1,
         "extra_entities": loads(st.extra_entities),
+        "expected": getattr(st, "expected_score", 0.0),
     }
+
+    return d
