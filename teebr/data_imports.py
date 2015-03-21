@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 from peewee import IntegrityError
 from tweepy.api import API as TwitterAPI
+#from tweepy.error import TweepError
 
 from .auth import get_tweepy_oauth_handler
 from .web.oauth import twitter
@@ -48,12 +49,16 @@ class TimelinesFetcher(object):
 
     def fetch_producer(self, producer):
         # 200 is the page limit
-        kwargs = {"count": 200, "user_id": producer.id_str}
+        kwargs = {"count": 40, "user_id": producer.id_str}
 
         if producer.last_status_id != 0:
             kwargs["since_id"] = producer.last_status_id
 
+        #try:
         timeline = list(self.api.user_timeline(**kwargs))
+        #except TweepError as e:
+        #    logger.warn(e)
+        #    return
 
         logger.debug("Importing %d statuses from @%s" % (
             len(timeline), producer.screen_name))
