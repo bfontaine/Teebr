@@ -15,6 +15,9 @@ from .pipeline import import_status, init_pipeline
 
 logger = mkLogger("data_imports")
 
+# This has to be <=200
+STATUSES_PER_PRODUCER = 50
+
 init_pipeline()
 
 def import_credentials(consumer, creds):
@@ -49,7 +52,7 @@ class TimelinesFetcher(object):
 
     def fetch_producer(self, producer):
         # 200 is the page limit
-        kwargs = {"count": 40, "user_id": producer.id_str}
+        kwargs = {"count": STATUSES_PER_PRODUCER, "user_id": producer.id_str}
 
         if producer.last_status_id != 0:
             kwargs["since_id"] = producer.last_status_id
