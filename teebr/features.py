@@ -6,10 +6,9 @@ import re
 from json import dumps
 from collections import defaultdict
 
-import bayes
-
 from .log import mkLogger
 from .text.utils import contains_emoji, extract_named_entities
+from .text.spam import is_spam
 
 logger = mkLogger("features")
 
@@ -143,10 +142,6 @@ END_DIGITS = re.compile(r"\s*\d+$")
 
 entity_keys = ("urls", "hashtags", "user_mentions", "trends", "symbols", "media")
 
-storage = bayes.Storage("bayes.dat", 10)
-storage.load()
-spamFilter = bayes.Bayes(storage).is_spam
-
 
 def filter_status(st):
     """
@@ -182,12 +177,8 @@ def filter_status(st):
         return False
 
     # remove other spam tweets
-    try:
-        if spamFilter(st.text):
-            return False
-    except TypeError as e:
-        # got this once, don't know why
-        logger.warn(e)
+    if is_spam(st.text):
+        return False
 
     # ok
     return True
