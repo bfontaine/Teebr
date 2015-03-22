@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 
-from peewee import IntegrityError
+from peewee import IntegrityError, fn
 from tweepy.api import API as TwitterAPI
 #from tweepy.error import TweepError
 
@@ -47,7 +47,7 @@ class TimelinesFetcher(object):
 
     def start(self):
         while True:
-            for producer in Producer.select():
+            for producer in Producer.select().order_by(fn.Random()):
                 self.fetch_producer(producer)
 
     def fetch_producer(self, producer):
