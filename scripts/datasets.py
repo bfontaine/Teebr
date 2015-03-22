@@ -4,7 +4,7 @@ from json import loads
 from tweepy.models import Status
 from glob import glob
 
-_prefix = "datasets/statuses-"
+_prefix = "../datasets/statuses-"
 _suffix = ".jsons"
 
 _prefix_len = len(_prefix)
