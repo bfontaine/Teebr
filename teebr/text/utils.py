@@ -30,6 +30,11 @@ RE_END_HASHTAGS = re.compile(r"(?:#\S+\s*)+$")
 RE_HASH = re.compile(r"#")
 RE_MENTION = re.compile(r"@\S+")
 
+# some tweets contain lots of hashs, e.g.: ####### and this confuse the
+# RE_END_HASHTAGS replacement that takes a lot of time. We add this one before
+# to remove these repetitions
+RE_HASHS = re.compile(r"##+")
+
 SLANGS = [(re.compile(r"\b%s\b" % re.escape(s)),r) for s,r in (
     ("cuz", "because"),
     ("u r", "you are"),
@@ -47,10 +52,11 @@ DEL_SLANGS = [re.compile(s, re.IGNORECASE) for s in (
     "rofl",
 )]
 
-# names we don't want to extract
+# named entities we don't want to extract
 NAMES_BLACKLIST = set([
-    "(", ")", "[", "]", "+", "|", "%", "...", "~",
-    "The", "Of", "In",
+    "(", ")", "[", "]", "+", "|", "%", "...", "~", "_", ":[",
+    "The", "Of", "In", "", "n", "t", "\n", "m", "x", "N",
+    "ll", "re", "ve", "pm",
 ])
 
 htmlparser = HTMLParser()
@@ -85,6 +91,13 @@ def normalize_text(text):
     """
     Return a normalized version of a status, meant to be tokenized by NLTK for
     entity extraction.
+
+    Note that on an Homebrewed Python on OS X the function might print warnings
+    like: ::
+
+        RuntimeWarning: Surrogate character u'\\udf05' will be ignored
+
+    You can safely ignore them.
     """
     # remove accents, emoji & co
     text = unidecode(unicode(text))
@@ -99,6 +112,7 @@ def normalize_text(text):
     text = RE_RT.sub("", text)
 
     # strip hashtags at the end
+    text = RE_HASHS.sub("", text)
     text = RE_END_HASHTAGS.sub("", text)
 
     # strip #'s
@@ -127,5 +141,6 @@ def extract_named_entities(text):
     blob = TextBlob(text)
     tagged = blob.tags
 
-    return [word for word, tag in tagged
-                if tag.startswith("NN") and word not in NAMES_BLACKLIST]
+    words = [word.strip().replace(",", " ") for word, tag in tagged \
+                if tag.startswith("NN")]
+    return [word for word in words if word not in NAMES_BLACKLIST]
