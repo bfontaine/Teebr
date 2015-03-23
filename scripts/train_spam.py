@@ -2,16 +2,15 @@
 
 from __future__ import absolute_import
 
-import datasets
 import bayes
-from sys import argv
+from sys import argv, exit
 
 if len(argv) == 2:
     with open(argv[1]) as f:
         texts = [l.strip() for l in f]
 else:
-    data = datasets.get("2015-03-11")
-    texts = [t.text for t in data]
+    print "give me a file as an argument!"
+    exit(1)
 
 storage = bayes.Storage("bayes.dat", 10)
 

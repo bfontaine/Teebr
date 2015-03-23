@@ -34,8 +34,6 @@ app.css
 /ENV
 
 # Data
-/datasets
-/*.jsons
 *.db
 *.db-journal
 
