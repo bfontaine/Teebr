@@ -76,6 +76,84 @@ class ContentSignature(BaseModel):
     sg_contributors = IndicatorField(u"Contributors")
 
 
+    # Hardcoded for the demo
+    sg_mc_word_amazon       = IndicatorField("word:amazon")
+    sg_mc_word_android      = IndicatorField("word:android")
+    sg_mc_word_app          = IndicatorField("word:app")
+    sg_mc_word_apple        = IndicatorField("word:apple")
+    sg_mc_word_apps         = IndicatorField("word:apps")
+    sg_mc_word_australia    = IndicatorField("word:australia")
+    sg_mc_word_bbm          = IndicatorField("word:bbm")
+    sg_mc_word_blog         = IndicatorField("word:blog")
+    sg_mc_word_california   = IndicatorField("word:california")
+    sg_mc_word_ceo          = IndicatorField("word:ceo")
+    sg_mc_word_change       = IndicatorField("word:change")
+    sg_mc_word_china        = IndicatorField("word:china")
+    sg_mc_word_company      = IndicatorField("word:company")
+    sg_mc_word_developer    = IndicatorField("word:developer")
+    sg_mc_word_engadget     = IndicatorField("word:engadget")
+    sg_mc_word_entrepreneur = IndicatorField("word:entrepreneur")
+    sg_mc_word_everything   = IndicatorField("word:everything")
+    sg_mc_word_facebook     = IndicatorField("word:facebook")
+    sg_mc_word_food         = IndicatorField("word:food")
+    sg_mc_word_fyi          = IndicatorField("word:fyi")
+    sg_mc_word_galaxy       = IndicatorField("word:galaxy")
+    sg_mc_word_google       = IndicatorField("word:google")
+    sg_mc_word_green        = IndicatorField("word:green")
+    sg_mc_word_happy        = IndicatorField("word:happy")
+    sg_mc_word_interview    = IndicatorField("word:interview")
+    sg_mc_word_ios          = IndicatorField("word:ios")
+    sg_mc_word_ipad         = IndicatorField("word:ipad")
+    sg_mc_word_iphone       = IndicatorField("word:iphone")
+    sg_mc_word_ipod         = IndicatorField("word:ipod")
+    sg_mc_word_itunes       = IndicatorField("word:itunes")
+    sg_mc_word_java         = IndicatorField("word:java")
+    sg_mc_word_life         = IndicatorField("word:life")
+    sg_mc_word_linux        = IndicatorField("word:linux")
+    sg_mc_word_love         = IndicatorField("word:love")
+    sg_mc_word_macbook      = IndicatorField("word:macbook")
+    sg_mc_word_microsoft    = IndicatorField("word:microsoft")
+    sg_mc_word_mobile       = IndicatorField("word:mobile")
+    sg_mc_word_music        = IndicatorField("word:music")
+    sg_mc_word_netflix      = IndicatorField("word:netflix")
+    sg_mc_word_nfl          = IndicatorField("word:nfl")
+    sg_mc_word_night        = IndicatorField("word:night")
+    sg_mc_word_nyt          = IndicatorField("word:nyt")
+    sg_mc_word_office       = IndicatorField("word:office")
+    sg_mc_word_people       = IndicatorField("word:people")
+    sg_mc_word_phone        = IndicatorField("word:phone")
+    sg_mc_word_product      = IndicatorField("word:product")
+    sg_mc_word_programming  = IndicatorField("word:programming")
+    sg_mc_word_python       = IndicatorField("word:python")
+    sg_mc_word_reuters      = IndicatorField("word:reuters")
+    sg_mc_word_review       = IndicatorField("word:review")
+    sg_mc_word_school       = IndicatorField("word:school")
+    sg_mc_word_seo          = IndicatorField("word:seo")
+    sg_mc_word_social       = IndicatorField("word:social")
+    sg_mc_word_software     = IndicatorField("word:software")
+    sg_mc_word_someone      = IndicatorField("word:someone")
+    sg_mc_word_startup      = IndicatorField("word:startup")
+    sg_mc_word_startups     = IndicatorField("word:startups")
+    sg_mc_word_store        = IndicatorField("word:store")
+    sg_mc_word_sxsw         = IndicatorField("word:sxsw")
+    sg_mc_word_tech         = IndicatorField("word:tech")
+    sg_mc_word_technology   = IndicatorField("word:technology")
+    sg_mc_word_tesla        = IndicatorField("word:tesla")
+    sg_mc_word_thing        = IndicatorField("word:thing")
+    sg_mc_word_touch        = IndicatorField("word:touch")
+    sg_mc_word_tv           = IndicatorField("word:tv")
+    sg_mc_word_twitter      = IndicatorField("word:twitter")
+    sg_mc_word_uk           = IndicatorField("word:uk")
+    sg_mc_word_video        = IndicatorField("word:video")
+    sg_mc_word_watch        = IndicatorField("word:watch")
+    sg_mc_word_web          = IndicatorField("word:web")
+    sg_mc_word_windows      = IndicatorField("word:windows")
+    sg_mc_word_women        = IndicatorField("word:women")
+    sg_mc_word_work         = IndicatorField("word:work")
+    sg_mc_word_world        = IndicatorField("word:world")
+    sg_mc_word_youtube      = IndicatorField("word:youtube")
+
+
 class User(ContentSignature):
     pass
 
@@ -221,16 +299,6 @@ class TwitterCredentials(BaseModel):
         indexes = (
             (('access_token_key', 'access_token_secret'), True),
         )
-
-
-def extend_with_sig_words():
-    """
-    Extend models with the most common words
-    """
-    with open("most_common_words.txt") as f:
-        for word in [l.strip() for l in f]:
-            field = IndicatorField("word:%s" % word)
-            field.add_to_class(ContentSignature, "sg_mc_word_%s" % word)
 
 
 def create_tables():

@@ -25,11 +25,13 @@ def migrate(migrator, database):
     > migrator.add_not_null(table, column)
     > migrator.drop_not_null(table, column)
 
+    XXX: not sure this works
     """
     with open("most_common_words.txt") as f:
         for word in [l.strip() for l in f]:
-            field = IndicatorField("word:%s" % word)
-            name = "sg_mc_word_%s" % word
-            migrator.add_column("consumer", name, field)
-            migrator.add_column("producer", name, field)
-            migrator.add_column("status", name, field)
+            word = word.lower()
+            for table in ("consumer", "producer", "status"):
+                field = IndicatorField("word:%s" % word)
+                name = "sg_mc_word_%s" % word
+                migrator.add_column(table, name, field)
+                migrator.add_not_null(table, name)

@@ -8,6 +8,7 @@ from collections import defaultdict
 
 from .log import mkLogger
 from .text.utils import contains_emoji, extract_named_entities
+from .text.utils import most_common_words
 from .text.spam import is_spam
 
 logger = mkLogger("features")
@@ -198,17 +199,24 @@ class FeaturesDict(defaultdict):
 
         st = self._st
 
-        self["sg_geolocalized"] = st.geo is not None
-        self["sg_lang_%s" % st.lang] = 1
-        self["sg_contributors"] = st.contributors is not None
+        self["sg_geolocalized"] = float(st.geo is not None)
+        self["sg_lang_%s" % st.lang] = 1.0
+        self["sg_contributors"] = float(st.contributors is not None)
         self["sg_emojis"] = contains_emoji(st.text)
         # some statuses don't have this attribute
-        self["sg_nsfw"] = getattr(st, "possibly_sensitive", False)
+        self["sg_nsfw"] = getattr(st, "possibly_sensitive", 0.0)
 
-        self["names"] = ",".join(extract_named_entities(st.text))
+        entities = extract_named_entities(st.text)
 
-        self["retweet_count"] = getattr(st, "retweet_count", 0)
-        self["favorite_count"] = getattr(st, "favorite_count", 0)
+        self["names"] = ",".join(entities)
+
+        for entity in entities:
+            entity = entity.lower()
+            if entity in most_common_words:
+                self["sg_mc_word_%s" % entity] = 1.0
+
+        self["retweet_count"] = getattr(st, "retweet_count", 0.0)
+        self["favorite_count"] = getattr(st, "favorite_count", 0.0)
 
         for key in entity_keys:
             self["sg_%s" % key] = int(bool(self._st.entities["urls"]))
@@ -225,16 +233,16 @@ class FeaturesDict(defaultdict):
 
         for s,vs in SOURCE_TYPES.items():
             if text in vs:
-                self["sg_%s" % s] = 1
+                self["sg_%s" % s] = 1.0
                 return
 
         ltext = text.lower()
         for brand in ("android", "iphone", "blackberry", "windows phone"):
             if ltext.endswith(" for %s" % brand):
-                self["sg_source_mobile"] = 1
+                self["sg_source_mobile"] = 1.0
                 return
 
-        self["sg_source_others"] = 1
+        self["sg_source_others"] = 1.0
 
 
     def _set_extra_entities(self):
