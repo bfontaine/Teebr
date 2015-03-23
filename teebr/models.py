@@ -223,6 +223,16 @@ class TwitterCredentials(BaseModel):
         )
 
 
+def extend_with_sig_words():
+    """
+    Extend models with the most common words
+    """
+    with open("most_common_words.txt") as f:
+        for word in [l.strip() for l in f]:
+            field = IndicatorField("word:%s" % word)
+            field.add_to_class(ContentSignature, "sg_mc_word_%s" % word)
+
+
 def create_tables():
     db.create_tables([
         Producer, Consumer, Status, Rating, TwitterCredentials], safe=True)
