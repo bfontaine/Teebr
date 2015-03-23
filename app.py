@@ -13,6 +13,7 @@ from teebr.log import mkLogger
 from teebr.models import status_to_dict
 from teebr.pipeline import rate_status
 from teebr.data_imports import import_credentials
+from teebr.recommendation import get_similar_producers
 from teebr.users import get_consumer_profile, get_unrated_statuses
 from teebr.users import set_user_settings, mark_status_as_spam
 from teebr.users import reset_user_ratings
@@ -170,8 +171,9 @@ def user_recommendations():
     if not g.user:
         return redirect(url_for("index"))
 
+    prods = get_similar_producers(g.user)
     # TODO
-    return render_template('recommendations.html')
+    return render_template('recommendations.html', producers=prods)
 
 # AJAX routes
 

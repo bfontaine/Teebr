@@ -80,6 +80,10 @@ def set_producer(producer, status, st_dict):
 def rate_status(consumer, status_id, score):
     status = Status.get(Status.id == Status.id)
 
+    if score < 0:
+        # let's test with non-negative ratings
+        score = 0
+
     with db.transaction():
         r = Rating.create(consumer=consumer, status=status, score=score)
         consumer.rated_statuses += 1

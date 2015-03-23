@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import, unicode_literals
 
+from .text.utils import most_common_words
+
 # Note: we could also adjust these depending on the rarity of each feature. For
 # example, a very rare feature could have a high factor while a more common one
 # would have a lower factor.
@@ -29,12 +31,19 @@ feat_factors = {
     'sg_nsfw': 2.0,
 }
 
+for mcw in most_common_words:
+    feat_factors["sg_mc_word_%s" % mcw] = 3.0
+
+
 def similarity_score(keys, sig1, sig1_count, sig2, sig2_count):
     """
     Compute a similarity score between two signatures.
     """
     score = 0.0
     factors = 0.0
+
+    if keys is None:
+        keys = sig1._meta.fields.keys()
 
     sig1 = sig1.__dict__["_data"]
     sig2 = sig2.__dict__["_data"]
@@ -53,18 +62,26 @@ def similarity_score(keys, sig1, sig1_count, sig2, sig2_count):
         if v1 == 0 or v2 == 0:
             continue
 
-        factor = feat_factors.get(k, 1.0)
+        if v1 < -1.0:
+            v1 = -1.0
+
+        if v2 < -1.0:
+            v2 = -1.0
 
         # normalize both features
         v1 /= sig1_count
         v2 /= sig2_count
 
-        score += abs(v2 - v1) * factor
+        factor = feat_factors.get(k, 1.0)
+
+        score += (abs(v2 - v1) * factor)
         factors += factor
 
     if factors == 0:
         return 1.0
 
+    # we'd have to divide by 2 because ratings can be negative: [-1, +1] but we
+    # test with non-negative ratings (see in teebr.pipeline.rate_status)
     return score / factors
 
 def users_similarity_score(consumer, producer):
@@ -77,5 +94,4 @@ def users_similarity_score(consumer, producer):
     count_producer = float(producer.imported_statuses)
 
     return similarity_score(
-            consumer._meta.fields.keys(),
-            consumer, count_consumer, producer, count_producer)
+            None, consumer, count_consumer, producer, count_producer)

@@ -5,8 +5,8 @@ from __future__ import absolute_import, unicode_literals
 from peewee import fn
 
 from .log import mkLogger
-from .models import Status, Consumer, db
-from .recommendation import similarity_score
+from .models import Status, Consumer, Producer, db
+from .recommendation import similarity_score, users_similarity_score
 from .web import get_languages
 
 logger = mkLogger("users")
@@ -103,3 +103,27 @@ def reset_user_ratings(consumer):
 
     # re-create
     get_consumer_profile(screen_name)
+
+
+def get_similar_producers(consumer, limit=5, min_statuses=10, max_threshold=0.5):
+    """
+    Retrieve the top producers by their similarity with the given consumer.
+    This is an expensive computation and could be optimized in the future.
+    """
+    producers = Producer.select().where(Producer.imported_statuses > min_statuses)
+    producers = producers.order_by(fn.Random()).limit(max(2000, limit*2))
+
+    raw_producers = []
+
+    for producer in producers:
+        score = users_similarity_score(consumer, producer)
+        if score <= max_threshold:
+            raw_producers.append((score, producer))
+
+    raw_producers.sort(key=lambda p: p[0])
+
+    if limit <= 0:
+        # sane default
+        limit = 5
+
+    return raw_producers[:limit]
