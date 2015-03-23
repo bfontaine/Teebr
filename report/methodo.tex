@@ -7,10 +7,9 @@
 Le projet est réalisé intégralement en Python, et est divisé en trois grandes
 parties.
 
-La première est la récupération des données en utilisant l’\api{} Streaming de
-\twt{} avec la bibliothèque \verb|tweepy| et \verb|pybayesantispam| pour
-filtrer les tweets.
-
+La première est la récupération des données en utilisant l’\api{} de \twt{}
+avec la bibliothèque \verb|tweepy| et \verb|pybayesantispam| pour filtrer les
+tweets.
 
 La deuxième est le traitement et stockage des données, à l’aide des
 bibliothèques \verb|unidecode|, \verb|nltk| et \verb|textblob| pour le
@@ -26,8 +25,7 @@ des recherches beaucoup plus performantes.
 
 Enfin, la troisième est l’interface Web, à l’aide des bibliothèques
 \verb|Flask| et \verb|Gunicorn| pour la gestion des requêtes et de \verb|Babel|
-pour la localisation\footnote{Par égard pour nos amis anglophobes l’application
-est disponible intégralement en anglais et en français.}. L’interface utilise
+pour la localisation. L’interface utilise
 également \verb|LESS| pour pré-processer le CSS, et le framework
 \verb|Bootstrap| pour la mise en forme. Le site Web tourne dans un conteneur
 \I{Docker}, et est déployé avec \verb|dokku|.
@@ -79,10 +77,21 @@ d’importer un peu plus de 1000 comptes par minute dans la base de données}.
 Il est donc nécessaire de faire une récupération plus approfondie. On utilise
 ici toujours l’\api{} de \twt{}, mais cette fois-ci on parcourt tous les
 producteurs enregistrés dans la base grâce à la précédente passe et on récupère
-leurs derniers \tweets{}\footnote{Au maximum 40 par compte actuellement}. Il
+leurs derniers \tweets{}\footnote{Au maximum 50 par compte actuellement, mais
+ce montant est paramétrable}. Il
 faut un nombre conséquent de \tweets{} pour générer la signature d’un
 producteur et cette passe nous permet de le faire. Elle corrige également les
 défauts de la précédente notamment la sensibilité à l’actualité du moment.
+
+En plus des données fournies par l’\api{}, nous extrayons les noms des
+\tweets{} à l’aide de la bibliothèque \verb|textblob|, basée sur \verb|nltk|,
+avec un pré-nettoyage du texte maison et un post-traitement pour supprimer les
+faux positifs\footnote{Voir dans \verb|teebr.text.utils|}. Ces entitées sont
+stockées dans un champ de chaque \tweet{}. Il y a souvent des faux positifs,
+mais cela réduit déjà les possibilités de représentation du \tweet{} : il est
+plus facile d’agréger les tweets avec une courte liste de mots plutôt qu’avec
+un texte de 140 caractères qui contient des URLs, des smileys, et surtout des
+mots qui n’ajoutent pas d’information concernant le sujet (\I{stopwords}).
 
 \subsubsection{Sélection}
 
@@ -92,9 +101,62 @@ classification.
 
 On se limite ainsi aux \tweets{} écrits en anglais. On supprime les réponses
 et les \rts{}\footnote{Voir \verb|teebr.features.filter_status|} ainsi que les
-spams à l’aide d’un filtre Bayésien simple, entraîné à la main sur environ 300
+spams à l’aide d’un filtre Bayésien simple, entraîné à la main sur plus de 1500
 \tweets{}\footnote{Voir \verb|scripts/train_spam.py|}.
+
+Le spam a été un gros problème lors de ce projet, plus de la moitié des
+\tweets{} récupérés étaient du spam au début. L’utilisation du filtre Bayésien
+a considérablement réduit leur nombre sans toutefois les éliminer. Nous avons
+dû utiliser des méthodes très agressives comme l’élimination automatique des
+comptes dont un seul des \tweets{} est détecté comme du spam\footnote{Voir dans
+\verb|teebr.maintenance|}.
 
 \subsection{Traitement}
 
-TODO
+Une fois qu’un \tweet{} a passé tous les filtres et que nous disposons des noms
+mentionnés dans son texte, il est inséré dans la base de données. La
+catégorisation des \tweets{} étant le second plus gros problème rencontré dans
+ce projet après le spam, nous avons simplifié le principe pour avoir une démo
+fonctionnelle pour la soutenance.
+
+L’objectif de la classification est de pouvoir définir un ensemble fini de
+catégories pour l’ensemble du corpus, qui lui n’a pas de taille finie. Chaque
+\tweet{} est donc classée dans une ou plusieurs catégories, chacune d’entre
+elle correspondant à une caractéristique des signatures que l’on cherche à
+extraire. La solution utilisée par manque de temps a été de regarder les termes
+apparaissant le plus souvent dans les entités extraites des \tweets{} dans un
+corpus de $25000$ messages et d’utiliser les 70 plus utilisés comme catégories.
+Le fait que certains d’entre eux se recoupent n’est pas important car un
+\tweet{} peut appartenir à plusieurs catégories.
+
+Les données extraites de l’\api{} ainsi que les catégories nous donnent une
+petite centaine de caractéristiques pour chaque entitée de la base (\tweet{},
+producteur et consommateur).
+
+Nous calculons la signature d’un \tweet{} en fonction de ses caractéristiques,
+qui sont toutes booléennes. Si un \tweet{} est dans une catégorie, alors la
+caractéristique correspondante sera positive, s’il contient une URL la
+caractéristique « contient une URL » sera positive, etc. Nous ajoutons cette
+signature à la signature du producteur du \tweet{}, par simple addition des
+caractéristiques. Chaque producteur conserve un compteur de \tweets{} produit,
+permettant de le comparer à un autre producteur ayant un nombre différent de
+\tweets{} en calculant un ratio pour chaque caractéristique.
+
+Nous proposons un ensemble aléatoire de \tweets{} aux utilisateurs, qui peuvent
+les noter. Une note positive ajoute la signature du \tweet{} à celle de
+l’utilisateur, de façon identique à ce qu’on fait pour les producteurs. Une
+note négative retire au contraire la signature du \tweet{} de celle de
+l’utilisateur. Ce procédé peut résulter en des caractéristiques négatives pour
+un utilisateur. Il nous fait également perdre de l’information, mais nous
+n’avons pas trouvé d’autre moyen d’exprimer le rejet d’une catégorie de
+\tweets{}.
+
+La similarité entre producteurs et consommateurs se fait ensuite à partir de la
+similarité de leurs signatures. On ne conserve que les caractéristiques qui
+sont non-nulles pour chacun d’entre eux, les divisent par le nombre de
+\tweets{} produits pour l’un et noté pour l’autre, et effectuons une somme
+pondérée des différences\footnote{Voir \verb|teebr.recommendation|}. Cette
+somme est ensuite divisée par la somme des pondération des caractéristiques
+utilisées pour obtenir une distance entre $0$ et $1$. Une signature de $0$
+signifie que les deux utilisateurs sont parfaitement proches et une signature
+de $1$ signifie qu’elles sont très éloignées.

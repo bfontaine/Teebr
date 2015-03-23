@@ -2,3 +2,49 @@
 
 \section{Discussion}
 
+\subsection{Problèmes rencontrés}
+
+Plusieurs difficultés ont ralenti la réalisation de ce projet, mais c’est aussi
+grâce à elles qu’un tel projet est intéressant.
+
+\subsubsection{Exclusion du spam}
+
+Nous avions très largement sous-estimé le spam sur \twt{}. Au début du projet,
+les spams correspondaient à la majorité du contenu récupéré. Nous avons tenté
+plusieurs techniques à base de règles sur les motifs repérés dans les spams,
+mais beaucoup passaient entre les mailles du filet. La suppression de certains
+mots-clefs a permis de supprimer certaines catégories de \tweets{}
+indésirables. Par exemple, nous n’espérons pas extraire de \tweets{} sur le
+langage de programmation \I{Swift} à cause de la chanteuse du même nom.
+
+Les règles ajoutées à la main se révélant inefficaces, nous avons testé avec un
+filtre Bayésien, et cette solution s’est révélée très efficace par rapport à la
+précédente. Le programme utilise maintenant une combinaison des deux pour
+supprimer la majorité du spam. L’application Web permet également de signaler
+un \tweet{} comme étant du spam. Au bout d’un nombre fixe de signalements un
+\tweet{} ainsi que son auteur est supprimé de la base.
+
+\subsubsection{Catégorisation}
+
+La catégorisation des \tweets{} s’annonçait déjà comme un problème difficile
+avant le début de la réalisation. Nous n’avons pas à ce jour trouvé de solution
+miraculeuse à ce problème. La longueur des messages et la faiblesse du
+vocabulaire utilisé limitent très sérieusement les analyses linguistiques. Un
+\tweet{} contient en moyenne 11 mots \citep{OConnor2010}, il n’y a donc pas de
+répétition du sujet dans un message.
+
+\subsection{Pistes non explorées}
+
+Ce projet se concentre sur la recommandation basée sur les caractéristiques et
+le contenu des \tweets{} rapportés à leur auteur. Nous aurions aussi pu tenter
+de classifier les utilisateurs à partir de leurs \tweets~
+\citep{Pennacchiotti11}. Une telle classification ne permet de trouver que des
+profils sociaux, pas des catégories de contenu. Nous nous sommes également
+concentrés sur l’extraction de mots individuels sans regarder les
+co-occurrences de mots pour construire nos
+catégories~\citep{Ramage2010,Rigouste06}. Cela aurait permis d’éviter les
+ambiguités sur certains termes comme \I{Python} ou \I{Swift}. Enfin, nous ne
+nous intéressons pas aux URLs contenues dans les \tweets{}, alors qu’il serait
+également possible de les classifier, avec plus de succès ici car il existe de
+nombreux corpus de catégorisation d’URLs, notamment en fonction du domaine du
+site.
