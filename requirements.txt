@@ -15,7 +15,7 @@ nltk==3.0.1
 numpy==1.9.1
 oauth2==1.5.211
 oauthlib==0.7.2
-peewee==2.4.7
+peewee==2.5.0
 pep8==1.5.7
 pytz==2014.10
 PyYAML==3.11
