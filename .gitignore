@@ -37,6 +37,7 @@ app.css
 /datasets
 /*.jsons
 *.db
+*.db-journal
 
 # Logs
 *.log
