@@ -54,6 +54,12 @@ class TimelinesFetcher(object):
         # 200 is the page limit
         kwargs = {"count": STATUSES_PER_PRODUCER, "user_id": producer.id_str}
 
+        if producer.protected:
+            logger.debug("Removing producer '%s' because they're protected",
+                    producer.screen_name)
+            producer.delete_instance(recursive=True)
+            return
+
         if producer.last_status_id != 0:
             kwargs["since_id"] = producer.last_status_id
 
