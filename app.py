@@ -30,8 +30,6 @@ assets = Environment(app)
 js_filters = []
 css_filters = []
 
-app.config['DEBUG'] = True
-
 if not app.config['DEBUG']:
     js_filters += [IIFE] #, 'closure_js']
     css_filters += ['cssmin']
@@ -58,6 +56,9 @@ js = Bundle(
     'js/vendor/mousetrap.js',
     'js/vendor/wMousetrap.js',
     'js/vendor/ui-bootstrap-tpls-0.11.0.js',
+
+    'js/vendor/toggle-text.js',
+
     # Our JS
     'js/utils.js',
     'js/app.js',

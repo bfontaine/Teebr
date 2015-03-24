@@ -115,7 +115,7 @@ app.filter("short_number", ["$sce", function($sce) {
         }
     }
 
-    text = '<span class="short-number" data-long="' + n + '">' + short + '</span>';
+    text = '<span class="toggle-text short-number" data-toggle-text="' + n + '">' + short + '</span>';
 
     return $sce.trustAsHtml(text);
   };

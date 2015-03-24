@@ -1,15 +1,16 @@
+
+/* adapt the number of columns to the width of the window */
+.user-padded-container { width: 310px; padding: 10px; }
+@media (min-width:  992px) { .user-padded-container { width: 230px; } }
+@media (min-width: 1200px) { .user-padded-container { width: 280px; } }
+
 .recommendations {
     h1 {
-        margin-bottom: 100px;
+        margin-bottom: 80px;
     }
 
     .user-menu-container.open {
         z-index: 2;
-    }
-
-    .user-padded-container {
-        width: 250px;
-        padding: 10px;
     }
 
     .user-container {
@@ -21,10 +22,15 @@
             height: 80px;
             background-repeat: no-repeat;
             background-size: cover;
+
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
         }
 
         .user-avatar-container {
+            display: inline-block;
             position: relative;
+            margin-right: 18px;
             width: 54px;
             height: 54px;
             padding: 3px;
@@ -43,12 +49,53 @@
         .user-screen-name {
             font-weight: bold;
             color: @text;
+            font-size: 1.2em;
+            position: relative;
+            top: -8px;
         }
 
         .user-desc {
             padding: 10px 15px;
             overflow: hidden;
+            font-style: italic;
         }
 
+        .user-counters {
+            list-style: none;
+            text-align: center;
+            padding-left: 12px;
+            padding-right: 12px;
+
+            .user-counter {
+                display: inline-block;
+                width: 28%;
+
+                margin-bottom: 20px;
+
+                .user-counter-value, .user-counter-label { display: block; }
+
+                .user-counter-value {
+                    font-weight: bold;
+                    // balance the font weight
+                    color: lighten(@text, 5%);
+                }
+
+                .user-counter-label {
+                    font-size: 0.9em;
+                    color: lighten(@text, 8%);
+
+                    position: relative;
+                    top: -1px;
+                }
+            }
+        }
+
+        .user-counters, .user-avatar-container {
+            cursor: default;
+            -webkit-user-select: none;
+               -moz-user-select: none;
+                -ms-user-select: none;
+                    user-select: none;
+        }
     }
 }

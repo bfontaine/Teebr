@@ -19,21 +19,24 @@
             </div>
             <a ng-attr-href="https://twitter.com/_{p.screen_name}_"
             class="user-screen-name">@_{ p.screen_name }_</a>
-            <span class="user-name">_{ p.name }_</span>
+            {# <span class="user-name">_{ p.name }_</span> #}
             <p class="user-desc" ng-bind-html="p.description | tweet_html_text"></p>
-            <ul class="user-counters">
-                <li class="user-counter">
-                    <span ng-bind-html="p.statuses_count | short_number"></span>
+            <div class="user-counters">
+                <span class="user-counter">
+                    <span class="user-counter-value"
+                          ng-bind-html="p.statuses_count | short_number"></span>
                     <span class="user-counter-label">{{ _("statuses") }}</span>
-                </li>
-                <li class="user-counter">
-                    <span ng-bind-html="p.followers_count | short_number"></span>
+                </span>
+                <span class="user-counter">
+                    <span class="user-counter-value"
+                          ng-bind-html="p.followers_count | short_number"></span>
                     <span class="user-counter-label">{{ _("followers") }}</span>
-                </li>
-                <li class="user-counter">
-                    <span ng-bind-html="p.friends_count | short_number"></span>
+                </span>
+                <span class="user-counter">
+                    <span class="user-counter-value"
+                          ng-bind-html="p.friends_count | short_number"></span>
                     <span class="user-counter-label">{{ _("followings") }}</span>
-                </li>
+                </span>
             </ul>
         </div>
     </div>
