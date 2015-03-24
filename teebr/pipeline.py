@@ -82,15 +82,19 @@ def rate_status(consumer, status_id, score):
 
     if score < 0:
         # let's ignore negative ratings
-        return
+        score = 0
 
     with db.transaction():
         r = Rating.create(consumer=consumer, status=status, score=score)
-        consumer.rated_statuses += 1
         r.save()
 
-        update_user_sg_from_status(consumer, status, score)
-        consumer.save()
+        if score != 0:
+            # let's remember negative ratings but still skip them in the
+            # signatures
+            consumer.rated_statuses += 1
+
+            update_user_sg_from_status(consumer, status, score)
+            consumer.save()
 
     # TODO validate our model: check similarity_score between the consumer and
     # the status and see if the score was expected or not (e.g. positive score
