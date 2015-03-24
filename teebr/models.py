@@ -216,6 +216,28 @@ class Producer(User):
 
     spam_reported_times = IntegerField(default=0)
 
+    def to_jsonable_dict(self):
+        attrs = [
+            "protected",
+            "verified",
+            "name",
+            "screen_name",
+            "description",
+            "favourites_count",
+            "followers_count",
+            "friends_count",
+            "listed_count",
+            "statuses_count",
+            "profile_background_color",
+            "profile_link_color",
+            "profile_sidebar_border_color",
+            "profile_sidebar_fill_color",
+            "profile_text_color",
+            "profile_background_image_url_https",
+            "profile_image_url_https",
+        ]
+        return {attr: getattr(self, attr) for attr in attrs}
+
 
 class Consumer(User):
     screen_name = CharField(index=True, unique=True)

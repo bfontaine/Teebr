@@ -13,10 +13,9 @@ from teebr.log import mkLogger
 from teebr.models import status_to_dict
 from teebr.pipeline import rate_status
 from teebr.data_imports import import_credentials
-from teebr.recommendation import get_similar_producers
 from teebr.users import get_consumer_profile, get_unrated_statuses
 from teebr.users import set_user_settings, mark_status_as_spam
-from teebr.users import reset_user_ratings
+from teebr.users import reset_user_ratings, get_similar_producers
 from teebr.web import twitter, authorize_oauth, app, babel, get_languages
 
 # admin
@@ -31,6 +30,8 @@ assets = Environment(app)
 js_filters = []
 css_filters = []
 
+app.config['DEBUG'] = True
+
 if not app.config['DEBUG']:
     js_filters += [IIFE] #, 'closure_js']
     css_filters += ['cssmin']
@@ -40,10 +41,20 @@ if not app.config['DEBUG']:
 js = Bundle(
     # Bootstrap/Bootflat
     'js/vendor/jquery.js',
+   'js/vendor/jquery.bridget.js',
     'js/vendor/html5shiv.js',
     'js/vendor/bootstrap.min.js',
     'js/vendor/angular.js',
     'js/vendor/angular-animate.js',
+
+    # Angular-masonry and its dependencies for Pinterest-like blocks on the
+    # recommendations page
+    'js/vendor/eventie.js',
+    'js/vendor/EventEmitter.min.js',
+    'js/vendor/imagesloaded.js',
+    'js/vendor/masonry.pkgd.min.js',
+    'js/vendor/angular-masonry.min.js',
+
     'js/vendor/mousetrap.js',
     'js/vendor/wMousetrap.js',
     'js/vendor/ui-bootstrap-tpls-0.11.0.js',
@@ -171,8 +182,9 @@ def user_recommendations():
     if not g.user:
         return redirect(url_for("index"))
 
-    prods = get_similar_producers(g.user)
-    # TODO
+    user_header(gettext(u"@{}’s Recommendations"))
+
+    prods = [p[1].to_jsonable_dict() for p in get_similar_producers(g.user, 20)]
     return render_template('recommendations.html', producers=prods)
 
 # AJAX routes

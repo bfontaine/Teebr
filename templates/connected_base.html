@@ -8,9 +8,10 @@
      data-toggle="dropdown"></i>
 
   <ul class="dropdown-menu user-menu-items" role="menu">
-    <li><a href="{{ url_for("home") }}">{{ _("Home") }}</a></li>
-    <li><a href="{{ url_for("user_settings") }}">{{ _("Settings") }}</a></li>
-    <li><a href="{{ url_for("twitter_logout") }}">{{ _("Logout") }}</a></li>
+    <li><a href="{{ url_for("home")                 }}">{{ _("Home") }}</a></li>
+    <li><a href="{{ url_for("user_recommendations") }}">{{ _("Recommendations") }}</a></li>
+    <li><a href="{{ url_for("user_settings")        }}">{{ _("Settings") }}</a></li>
+    <li><a href="{{ url_for("twitter_logout")       }}">{{ _("Logout") }}</a></li>
   </ul>
 </div>
 

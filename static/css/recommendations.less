@@ -1,0 +1,54 @@
+.recommendations {
+    h1 {
+        margin-bottom: 100px;
+    }
+
+    .user-menu-container.open {
+        z-index: 2;
+    }
+
+    .user-padded-container {
+        width: 250px;
+        padding: 10px;
+    }
+
+    .user-container {
+        background-color: #F7F7F7;
+
+        border-radius: 2px;
+
+        .user-cover-container {
+            height: 80px;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .user-avatar-container {
+            position: relative;
+            width: 54px;
+            height: 54px;
+            padding: 3px;
+            background: white;
+
+            border-radius: 4px;
+
+            left: 14px;
+            top: -21px;
+
+            img {
+                border-radius: 2px;
+            }
+        }
+
+        .user-screen-name {
+            font-weight: bold;
+            color: @text;
+        }
+
+        .user-desc {
+            padding: 10px 15px;
+            overflow: hidden;
+        }
+
+    }
+}

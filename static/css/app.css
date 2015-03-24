@@ -102,3 +102,43 @@ body.user-settings form.user-settings .light-help {
 body.user-settings form.user-settings h2 {
   margin-top: 100px;
 }
+.recommendations h1 {
+  margin-bottom: 100px;
+}
+.recommendations .user-menu-container.open {
+  z-index: 2;
+}
+.recommendations .user-padded-container {
+  width: 250px;
+  padding: 10px;
+}
+.recommendations .user-container {
+  background-color: #F7F7F7;
+  border-radius: 2px;
+}
+.recommendations .user-container .user-cover-container {
+  height: 80px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.recommendations .user-container .user-avatar-container {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  padding: 3px;
+  background: white;
+  border-radius: 4px;
+  left: 14px;
+  top: -21px;
+}
+.recommendations .user-container .user-avatar-container img {
+  border-radius: 2px;
+}
+.recommendations .user-container .user-screen-name {
+  font-weight: bold;
+  color: #333333;
+}
+.recommendations .user-container .user-desc {
+  padding: 10px 15px;
+  overflow: hidden;
+}

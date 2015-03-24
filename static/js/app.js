@@ -1,5 +1,5 @@
 var app = angular.module('tbTeebr',
-  ['ui.bootstrap', 'tbUtils', 'mgo-mousetrap', 'ngAnimate']);
+  ['ui.bootstrap', 'tbUtils', 'mgo-mousetrap', 'ngAnimate', 'wu.masonry']);
 
 app.config(function($interpolateProvider) {
   $interpolateProvider.startSymbol('_{');
@@ -72,13 +72,50 @@ app.filter("tweet_html_text", ["$sce", function($sce) {
 
     if (!s) { return s; }
 
-    text = s.text;
-
-    if (!text) { return text; }
+    if (s.text) {
+        text = s.text;
+    } else {
+        text = s;
+    }
 
     //text = text.replace(/</, '&lt;').replace(/>/, '&gt;');
 
     text = highlightTwitterFeatures(text, s.extra_entities || {});
+
+    return $sce.trustAsHtml(text);
+  };
+}]);
+
+app.filter("short_number", ["$sce", function($sce) {
+
+  var units = [
+    { suffix: "k", factor: 1000 },
+    { suffix: "M", factor: 1000000 },
+  ];
+
+  function roundOneDecimal(n) {
+      return (0|(n * 10))/10;
+  }
+
+  return function(text) {
+    var n = +text,
+        short = text,
+        unit;
+
+    if (isNaN(n)) {
+        return text;
+    }
+
+    for (var i=0; i<units.length; i++) {
+        unit = units[i];
+
+        if (n > (unit.factor/10 * 6)) {
+            short = "" + roundOneDecimal(n/unit.factor) + unit.suffix;
+            break;
+        }
+    }
+
+    text = '<span class="short-number" data-long="' + n + '">' + short + '</span>';
 
     return $sce.trustAsHtml(text);
   };

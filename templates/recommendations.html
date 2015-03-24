@@ -4,6 +4,43 @@
 {% block body %}
 {{ super() }}
 
-<p>{{ _("Soon…") }}</p>
+
+<div masonry>
+    <div class="user-padded-container masonry-brick"
+        ng-repeat="p in producers">
+        <div class="user-container"
+            ng-style="p.textStyle">
+            <div class="user-cover-container"
+                ng-style="p.coverStyle"></div>
+            <div class="user-avatar-container">
+                <img ng-src="_{p.profile_image_url_https}_"
+                    height="48" width="48"
+                    class="user-avatar" />
+            </div>
+            <a ng-attr-href="https://twitter.com/_{p.screen_name}_"
+            class="user-screen-name">@_{ p.screen_name }_</a>
+            <span class="user-name">_{ p.name }_</span>
+            <p class="user-desc" ng-bind-html="p.description | tweet_html_text"></p>
+            <ul class="user-counters">
+                <li class="user-counter">
+                    <span ng-bind-html="p.statuses_count | short_number"></span>
+                    <span class="user-counter-label">{{ _("statuses") }}</span>
+                </li>
+                <li class="user-counter">
+                    <span ng-bind-html="p.followers_count | short_number"></span>
+                    <span class="user-counter-label">{{ _("followers") }}</span>
+                </li>
+                <li class="user-counter">
+                    <span ng-bind-html="p.friends_count | short_number"></span>
+                    <span class="user-counter-label">{{ _("followings") }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-json" id="producers">{{
+    producers | tojson | safe
+}}</script>
 
 {% endblock %}
