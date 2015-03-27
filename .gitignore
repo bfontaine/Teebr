@@ -40,3 +40,6 @@ app.css
 # Logs
 *.log
 *.log.*
+
+# slides
+/slides
