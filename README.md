@@ -1,6 +1,6 @@
 # Teebr
 
-A project for a Data Mining course.
+A project for a Data Mining course. Live demo at [teebr.co](http://teebr.co).
 
 ## Build
 
