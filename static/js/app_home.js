@@ -96,12 +96,16 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http', 'tbDOM',
   $scope.predictions = { count: 0, matched: 0 };
 
   $scope.validate = function validate(result) {
-    var t = 0.7;
+    var t = 0.3,
+        ok = result == 1,
+
+        // this is enabled with beta features in the settings
+        expected = $scope.status.expected;
 
     $scope.predictions.count++;
-    if ((result >= t && $scope.status.expected >= t) ||
-        (result < t && $scope.status.expected < t)) {
-      $scope.predictions.matched++;
+
+    if ((ok && expected < t) || (!ok && expected > t)) {
+        $scope.predictions.matched++;
     }
   };
 
