@@ -2,8 +2,33 @@
 
 \section{Résultats}
 
-TODO
+Dans l’ensemble, les recommandations semblent plutôt mauvaises. Après 301
+\tweets{} notés, seuls 2 des 20 recommandations de l’application étaient
+pertinentes. La plupart des \tweets{} étant d’assez mauvaise qualité (beaucoup
+de bruit), très peu de \tweets{} sont notés positivement, et la redondance des
+caractéristiques fait que la faible qualité d’une grande partie du corpus
+brouille les signatures.
 
 \subsection{Validation}
 
-TODO
+Afin de valider nos observations, nous avons appliqué deux méthodes de
+prédiction des notes sur les \tweets{}. Le but était de prédire si un \tweet{}
+allait être ou non noté positivement par l’utilisateur, puis compter le nombre
+de fois où la prédiction s’est révélée correcte. Plus ce nombre est grand, plus
+les prédictions sont bonnes et donc plus la recommandation est pertinente.
+
+La première méthode consiste à comparer la signature du consommateur avec celle
+du \tweet{}, et la seconde utilise le même principe sauf qu’elle compare la
+signature du consommateur à celle du producteur du \tweet{}.
+
+Sur un compte, et après environ 200 \tweets{} déjà notés, le premier cas a
+donné un taux de succès de 47\% (47 bonnes prédictions pour 100 \tweets{}
+notés). Le second cas a donné un taux plus encourageant à 56\% (59 bonnes
+prédictions pour 105 \tweets{}).
+
+\subsection{Interprétation}
+
+Les taux de résultats des recommandations sont très faibles, mais ça n’est pas
+surprenant. Le fait que les réseaux sociaux actuelles fassent de la
+recommandation basée sur le graphe social plutôt que seulement sur le contenu
+montre bien que la méthode explorée lors de ce projet a ses limites.
