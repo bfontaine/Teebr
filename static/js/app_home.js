@@ -96,9 +96,11 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http', 'tbDOM',
   $scope.predictions = { count: 0, matched: 0 };
 
   $scope.validate = function validate(result) {
+    var t = 0.7;
+
     $scope.predictions.count++;
-    if ((result > 0.5 && $scope.status.expected > 0.5) ||
-        (result < 0.5 && $scope.status.expected < 0.5)) {
+    if ((result >= t && $scope.status.expected >= t) ||
+        (result < t && $scope.status.expected < t)) {
       $scope.predictions.matched++;
     }
   };
