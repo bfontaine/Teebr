@@ -177,7 +177,11 @@ de $1$ signifie qu’elles sont très éloignées.
 
 Si on prend comme exemple les signatures de la figure \ref{eq:sig_proc_cons},
 avec les pondérations $(3, 2, 1, 1, 2)$, on obtient la valeur de similarité en
-calculant la différence entre chaque signature:
+calculant la différence entre chaque signature. Pour chaque indice $i$, on
+calcule la différence pondérée entre les éléments correspondants :
+$|\text{producer}_i - \text{consumer}_i|\times\text{pondération}_i$. Toutes les
+différences sont ensuite additionnées et le total est divisé par la somme des
+pondérations :
 
 $$
 \frac{|1-0.68|\times 3+|0.28-1|\times 2+|0.6-0.12|+|0.02-0|+|0.37-0.48|\times 2}{3 + 2 + 1 + 1 + 2}=0.35
