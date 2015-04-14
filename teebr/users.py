@@ -48,7 +48,8 @@ def get_unrated_statuses(user, count=20):
                 continue
 
         if add_expected_score:
-            score = similarity_score(feat_keys, user, feats_user_count, st, 1)
+            score = users_similarity_score(user, st.author)
+            #score = similarity_score(feat_keys, user, feats_user_count, st, 1)
             setattr(st, "expected_score", score)
 
         statuses.append(st)

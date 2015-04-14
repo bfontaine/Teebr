@@ -81,7 +81,7 @@ def similarity_score(keys, sig1, sig1_count, sig2, sig2_count):
         return 1.0
 
     # we'd have to divide by 2 because ratings can be negative: [-1, +1] but we
-    # test with non-negative ratings (see in teebr.pipeline.rate_status)
+    # now use non-negative ratings (see in teebr.pipeline.rate_status)
     return score / factors
 
 def users_similarity_score(consumer, producer):
