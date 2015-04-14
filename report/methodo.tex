@@ -17,7 +17,7 @@ traitement et une base de données SQLite pour le stockage. Le code utilise la
 bibliothèque \verb|peewee| qui sert d’ORM\footnote{Object-Relational Mapping}
 pour la base. Cette abstraction permet de ne pas dépendre du format de la base
 de données. Il serait possible d’utiliser une base PostgreSQL sans changer le
-code. L’utilisation d’SQLite permet de pouvoir tester rapidemment sans devoir
+code. L’utilisation d’SQLite permet de pouvoir tester rapidement sans devoir
 lancer de serveur de base de données ainsi que de profiter d’un schéma strict,
 que ne peuvent pas offrir des bases NoSQL comme MongoDB ou ElasticSearch.
 L’utilisation d’une base plutôt qu’un ensemble de fichiers JSON permet de faire
@@ -83,11 +83,11 @@ faut un nombre conséquent de \tweets{} pour générer la signature d’un
 producteur et cette passe nous permet de le faire. Elle corrige également les
 défauts de la précédente notamment la sensibilité à l’actualité du moment.
 
-En plus des données fournies par l’\api{}, nous extrayons les entitées nommées
+En plus des données fournies par l’\api{}, nous extrayons les entités nommées
 des \tweets{} à l’aide de la bibliothèque \verb|textblob|, basée sur
 \verb|nltk|, avec un pré-nettoyage du texte maison et un post-traitement pour
 supprimer les faux positifs\footnote{Voir dans \verb|teebr.text.utils|}. Ces
-entitées sont stockées dans un champ de chaque \tweet{}. Il y a souvent des
+entités sont stockées dans un champ de chaque \tweet{}. Il y a souvent des
 faux positifs, mais cela réduit déjà les possibilités de représentation du
 \tweet{} : il est plus facile d’agréger les tweets avec une courte liste de
 mots plutôt qu’avec un texte de 140 caractères qui contient des URLs, des
@@ -131,7 +131,7 @@ Le fait que certains d’entre eux se recoupent n’est pas important car un
 \tweet{} peut appartenir à plusieurs catégories.
 
 Les données extraites de l’\api{} ainsi que les catégories nous donnent une
-petite centaine de caractéristiques pour chaque entitée de la base (\tweet{},
+petite centaine de caractéristiques pour chaque entité de la base (\tweet{},
 producteur et consommateur).
 
 Nous calculons la signature d’un \tweet{} en fonction de ses caractéristiques,
