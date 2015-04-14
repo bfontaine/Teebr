@@ -64,6 +64,8 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http', 'tbDOM',
   /*- Rating ----------------------------------------------------------------*/
 
   $scope.rateStatus = function rateStatus(result, ev) {
+    $scope.validate(result);
+
     post("rate", {
       id: $scope.status.id,
       score: result,
@@ -88,6 +90,20 @@ app.controller('tbHomeCtrl', ['$scope', '$timeout', '$http', 'tbDOM',
   // shortcuts
   $scope.rateStatusYes = function y(e) { return $scope.rateStatus(1, e); };
   $scope.rateStatusNo = function n(e) { return $scope.rateStatus(0, e); };
+
+  /*-- Validation -----------------------------------------------------------*/
+
+  $scope.predictions = { count: 0, matched: 0 };
+
+  $scope.validate = function validate(result) {
+    $scope.predictions.count++;
+    if ((result > 0.5 && $scope.status.expected > 0.5) ||
+        (result < 0.5 && $scope.status.expected < 0.5)) {
+      $scope.predictions.matched++;
+    }
+  };
+
+  /*-------------------------------------------------------------------------*/
 
   init();
 }]);
